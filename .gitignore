@@ -1,0 +1,17 @@
+# Environment
+.env
+config.local.php
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs (local dev only)
+logs/
+
+# Folders not needed for deployment
+mySkills/

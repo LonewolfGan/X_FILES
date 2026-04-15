@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: xfiles
+    runtime: php
+    plan: free
+    buildCommand: |
+      # Install Python dependencies for NudeNet
+      apt-get update && apt-get install -y python3 python3-pip
+      pip3 install nudenet pillow numpy
+    startCommand: |
+      # Initialize database if needed
+      if [ -f init.sql ]; then
+        mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME < init.sql 2>/dev/null || true
+      fi
+      apache2-foreground
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: xfiles-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: xfiles-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: xfiles-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: xfiles-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: xfiles-db
+          property: password
+
+databases:
+  - name: xfiles-db
+    databaseName: xfiles
+    user: xfiles
+    plan: free
