@@ -1,0 +1,5 @@
+[build]
+cmd = "docker build -t xfiles ."
+
+[deploy]
+cmd = "docker run -p 80:80 xfiles"
