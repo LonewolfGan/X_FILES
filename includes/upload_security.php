@@ -284,34 +284,45 @@ function _analyzeImageNudeNet(string $tmpPath): array
     // Vérifier que Python est disponible
     $pythonCmd = null;
     
-    // Sur Render/Linux : python3 est le standard
-    // Sur Windows : essayer le chemin spécifique d'abord
-    $isWindows = DIRECTORY_SEPARATOR === '\\\\';
-    
-    if ($isWindows) {
-        // Essayer d'abord le python du user (où nudenet est installé)
-        $userPython = 'C:\\Users\\atlas\\AppData\\Local\\Programs\\Python\\Python310\\python.exe';
-        if (file_exists($userPython)) {
-            $test = shell_exec('"' . $userPython . '" --version 2>&1');
-            error_log("NUDENET DEBUG: Testing user python - result=" . ($test ?? 'null'));
-            if ($test !== null && str_contains($test, 'Python')) {
-                $pythonCmd = '"' . $userPython . '"';
-            }
+    // Sur Railway (Docker): utiliser le venv Python avec nudenet installé
+    $railwayPython = '/usr/local/bin/nudenet-python';
+    if (file_exists($railwayPython)) {
+        $test = shell_exec($railwayPython . ' --version 2>&1');
+        error_log("NUDENET DEBUG: Testing Railway venv python - result=" . ($test ?? 'null'));
+        if ($test !== null && str_contains($test, 'Python')) {
+            $pythonCmd = $railwayPython;
         }
     }
     
-    // Fallback sur les commandes génériques
+    // Sur Windows : essayer le chemin spécifique d'abord
     if ($pythonCmd === null) {
-        // Sur Linux/Render: python3 en priorité
-        $commands = $isWindows ? ['python', 'python3', 'py'] : ['python3', 'python'];
+        $isWindows = DIRECTORY_SEPARATOR === '\\\\';
         
-        foreach ($commands as $cmd) {
-            $test = shell_exec($cmd . ' --version 2>&1');
-            error_log("NUDENET DEBUG: Testing $cmd - result=" . ($test ?? 'null'));
-            // Vérifier que c'est vraiment Python et pas le message du Microsoft Store
-            if ($test !== null && str_contains($test, 'Python') && !str_contains($test, 'introuvable') && !str_contains($test, 'Microsoft Store')) {
-                $pythonCmd = $cmd;
-                break;
+        if ($isWindows) {
+            // Essayer d'abord le python du user (où nudenet est installé)
+            $userPython = 'C:\\Users\\atlas\\AppData\\Local\\Programs\\Python\\Python310\\python.exe';
+            if (file_exists($userPython)) {
+                $test = shell_exec('"' . $userPython . '" --version 2>&1');
+                error_log("NUDENET DEBUG: Testing user python - result=" . ($test ?? 'null'));
+                if ($test !== null && str_contains($test, 'Python')) {
+                    $pythonCmd = '"' . $userPython . '"';
+                }
+            }
+        }
+        
+        // Fallback sur les commandes génériques
+        if ($pythonCmd === null) {
+            // Sur Linux/Render: python3 en priorité
+            $commands = $isWindows ? ['python', 'python3', 'py'] : ['python3', 'python'];
+            
+            foreach ($commands as $cmd) {
+                $test = shell_exec($cmd . ' --version 2>&1');
+                error_log("NUDENET DEBUG: Testing $cmd - result=" . ($test ?? 'null'));
+                // Vérifier que c'est vraiment Python et pas le message du Microsoft Store
+                if ($test !== null && str_contains($test, 'Python') && !str_contains($test, 'introuvable') && !str_contains($test, 'Microsoft Store')) {
+                    $pythonCmd = $cmd;
+                    break;
+                }
             }
         }
     }
