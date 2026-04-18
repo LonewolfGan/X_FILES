@@ -1,6 +1,5 @@
 # Environment
 .env
-config.local.php
 
 # IDE
 .vscode/
@@ -10,8 +9,8 @@ config.local.php
 .DS_Store
 Thumbs.db
 
-# Logs (local dev only)
+# Logs
 logs/
 
-# Folders not needed for deployment
+# Not needed for deployment
 mySkills/
