@@ -1,0 +1,37 @@
+============================================================
+  MLD — Modèle Logique des Données — XFILES
+============================================================
+
+filieres (code, name)
+  PK: code
+
+modules (id, name, code, filiere_code, semester)
+  PK: id
+  FK: filiere_code → filieres.code
+
+users (id, name, login, password_hash, filiere_code, role, avatar, avatar_data, avatar_type, created_at)
+  PK: id
+  UK: login
+  FK: filiere_code → filieres.code
+
+documents (id, title, file, file_data, file_type, file_size, type, module_id, user_id, status, rejection_reason, created_at)
+  PK: id
+  FK: module_id → modules.id
+  FK: user_id → users.id
+
+commentaires (id, content, user_id, doc_id, rating, created_at)
+  PK: id
+  FK: user_id → users.id
+  FK: doc_id → documents.id
+
+============================================================
+  Règles de gestion
+============================================================
+1. Un utilisateur appartient optionnellement à une filière
+2. Un module appartient à une filière
+3. Un document est uploadé par un utilisateur et rattaché à un module
+4. Un document a un statut : en_attente, approuve, rejete
+5. Un commentaire est écrit par un utilisateur sur un document
+6. Le rôle d'un utilisateur est 'etudiant' ou 'admin'
+7. Le type d'un document est parmi : cours, td, tp, examen, resume
+8. La note d'un commentaire est entre 1 et 5

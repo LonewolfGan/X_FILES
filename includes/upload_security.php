@@ -132,13 +132,23 @@ function validateUpload(array $file, string $title): array
     // 11. Analyse spécifique par type
     if (str_starts_with($mime, 'image/')) {
         [$imgErrors, $imgWarnings] = _analyzeImage($file['tmp_name']);
-        $errors   = array_merge($errors, $imgErrors);
-        $warnings = array_merge($warnings, $imgWarnings);
+        // Treat image warnings as errors to trigger review request
+        if (!empty($imgWarnings)) {
+            $errors = array_merge($errors, $imgWarnings);
+        } else {
+            $warnings = array_merge($warnings, $imgWarnings);
+        }
+        $errors = array_merge($errors, $imgErrors);
     }
 
     if ($mime === 'application/pdf') {
         $pdfWarnings = _analyzePdf($file['tmp_name']);
-        $warnings = array_merge($warnings, $pdfWarnings);
+        // Treat PDF warnings as errors to trigger review request
+        if (!empty($pdfWarnings)) {
+            $errors = array_merge($errors, $pdfWarnings);
+        } else {
+            $warnings = array_merge($warnings, $pdfWarnings);
+        }
     }
 
     // 12. Double extension suspecte
@@ -254,8 +264,8 @@ function _analyzeImage(string $tmpPath): array
         $warnings[] = 'Données inhabituelles dans le fichier image.';
     }
 
-    // Analyse NudeNet ML pour contenu explicite
-    [$mlErrors, $mlWarnings] = _analyzeImageNudeNet($tmpPath);
+    // Analyse SightEngine ML pour contenu explicite
+    [$mlErrors, $mlWarnings] = _analyzeImageSightEngine($tmpPath);
     $errors   = array_merge($errors, $mlErrors);
     $warnings = array_merge($warnings, $mlWarnings);
 
@@ -263,110 +273,70 @@ function _analyzeImage(string $tmpPath): array
 }
 
 /**
- * Analyse une image avec NudeNet (Python) pour détecter le contenu explicite
+ * Analyse une image avec SightEngine API pour détecter le contenu explicite
  * @param string $tmpPath Chemin de l'image temporaire
  * @return array [errors[], warnings[]]
  */
-function _analyzeImageNudeNet(string $tmpPath): array
+function _analyzeImageSightEngine(string $tmpPath): array
 {
     $errors   = [];
     $warnings = [];
 
-    // Chemin vers le script Python
-    $pythonScript = __DIR__ . '/../scripts/analyze_image.py';
-    error_log("NUDENET DEBUG: Script path=$pythonScript exists=" . (file_exists($pythonScript) ? 'yes' : 'no'));
+    $params = array(
+        'media' => new CURLFile($tmpPath),
+        'workflow' => 'wfl_kzG0UXGaPExZSfSfi36vn',
+        'api_user' => '1336098',
+        'api_secret' => 'HvL2jwqg67V7PHGGfscn9vZ6NLZqo69V',
+    );
 
-    if (!file_exists($pythonScript)) {
-        error_log("NUDENET DEBUG: Script Python introuvable");
+    $ch = curl_init('https://api.sightengine.com/1.0/check-workflow.json');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($response === false || $httpCode !== 200) {
+        error_log("SIGHTENGINE DEBUG: API error - http_code=$httpCode response=" . ($response ?? 'null'));
+        // En cas d'erreur API, on bloque et demande revue (fail-closed)
+        $errors[] = 'Impossible de vérifier le contenu de l\'image. Veuillez réessayer ou contacter l\'administrateur.';
         return [$errors, $warnings];
     }
 
-    // Vérifier que Python est disponible
-    $pythonCmd = null;
-    
-    // Sur Railway (Docker): utiliser le venv Python avec nudenet installé
-    $railwayPython = '/usr/local/bin/nudenet-python';
-    if (file_exists($railwayPython)) {
-        $test = shell_exec($railwayPython . ' --version 2>&1');
-        error_log("NUDENET DEBUG: Testing Railway venv python - result=" . ($test ?? 'null'));
-        if ($test !== null && str_contains($test, 'Python')) {
-            $pythonCmd = $railwayPython;
-        }
+    $output = json_decode($response, true);
+    if ($output === null || !isset($output['summary']['action'])) {
+        error_log("SIGHTENGINE DEBUG: Invalid JSON response - " . json_last_error_msg());
+        // En cas de réponse invalide, on bloque et demande revue (fail-closed)
+        $errors[] = 'Erreur lors de l\'analyse de l\'image. Veuillez réessayer.';
+        return [$errors, $warnings];
     }
-    
-    // Sur Windows : essayer le chemin spécifique d'abord
-    if ($pythonCmd === null) {
-        $isWindows = DIRECTORY_SEPARATOR === '\\\\';
+
+    if ($output['summary']['action'] === 'reject') {
+        $rejectProb = $output['summary']['reject_prob'] ?? 0;
+        $rejectReasons = $output['summary']['reject_reason'] ?? [];
         
-        if ($isWindows) {
-            // Essayer d'abord le python du user (où nudenet est installé)
-            $userPython = 'C:\\Users\\atlas\\AppData\\Local\\Programs\\Python\\Python310\\python.exe';
-            if (file_exists($userPython)) {
-                $test = shell_exec('"' . $userPython . '" --version 2>&1');
-                error_log("NUDENET DEBUG: Testing user python - result=" . ($test ?? 'null'));
-                if ($test !== null && str_contains($test, 'Python')) {
-                    $pythonCmd = '"' . $userPython . '"';
+        // Logger les détails techniques pour l'admin
+        error_log("SIGHTENGINE REJECT: prob=$rejectProb reasons=" . json_encode($rejectReasons));
+        
+        // Extraire les raisons lisibles pour l'utilisateur
+        $userReasons = [];
+        if (is_array($rejectReasons)) {
+            foreach ($rejectReasons as $reason) {
+                if (isset($reason['text'])) {
+                    $userReasons[] = $reason['text'];
                 }
             }
         }
         
-        // Fallback sur les commandes génériques
-        if ($pythonCmd === null) {
-            // Sur Linux/Render: python3 en priorité
-            $commands = $isWindows ? ['python', 'python3', 'py'] : ['python3', 'python'];
-            
-            foreach ($commands as $cmd) {
-                $test = shell_exec($cmd . ' --version 2>&1');
-                error_log("NUDENET DEBUG: Testing $cmd - result=" . ($test ?? 'null'));
-                // Vérifier que c'est vraiment Python et pas le message du Microsoft Store
-                if ($test !== null && str_contains($test, 'Python') && !str_contains($test, 'introuvable') && !str_contains($test, 'Microsoft Store')) {
-                    $pythonCmd = $cmd;
-                    break;
-                }
-            }
-        }
-    }
-
-    if ($pythonCmd === null) {
-        error_log("NUDENET DEBUG: Python non trouvé");
-        return [$errors, $warnings];
-    }
-    error_log("NUDENET DEBUG: Using Python cmd=$pythonCmd");
-
-    // Exécuter le script Python
-    $escapedPath = escapeshellarg($tmpPath);
-    $escapedScript = escapeshellarg($pythonScript);
-    $command = "$pythonCmd $escapedScript $escapedPath 2>&1";
-    error_log("NUDENET DEBUG: Command=$command");
-
-    $output = shell_exec($command);
-    error_log("NUDENET DEBUG: Output=" . ($output ?? 'null'));
-
-    if ($output === null || empty($output)) {
-        error_log("NUDENET DEBUG: Output vide");
-        return [$errors, $warnings];
-    }
-
-    // Parser le JSON
-    $result = json_decode($output, true);
-    if ($result === null || !isset($result['safe'], $result['unsafe'])) {
-        error_log("NUDENET DEBUG: JSON invalide - error=" . json_last_error_msg());
-        return [$errors, $warnings];
-    }
-    error_log("NUDENET DEBUG: Result parsed - safe=" . $result['safe'] . " unsafe=" . $result['unsafe']);
-
-    $safeScore   = (float) ($result['safe'] ?? 1.0);
-    $unsafeScore = (float) ($result['unsafe'] ?? 0.0);
-
-    // Seuils de détection NudeNet - PAS DE MODÉRATION, juste blocage si explicite
-    if ($unsafeScore > 0.7) {
-        // Contenu explicitement inapproprié - BLOCAGE STRICT
+        $reasonText = empty($userReasons) ? 'contenu inapproprié' : implode(', ', $userReasons);
+        
         $errors[] = sprintf(
-            'Contenu explicite detecte dans l\'image (confiance: %d%%). Upload interdit.',
-            round($unsafeScore * 100)
+            'Contenu inapproprié détecté (%s). Upload interdit.',
+            $reasonText
         );
     }
-    // < 0.7 : accepté automatiquement (pas de review)
 
     return [$errors, $warnings];
 }
@@ -386,28 +356,13 @@ function _analyzePdf(string $tmpPath): array
         return [['Le fichier n\'est pas un PDF valide.']];
     }
 
-    // Détecter JavaScript embarqué (risque XSS/exploit)
-    if (preg_match('/\/JavaScript|\/JS\s/i', $header)) {
-        $warnings[] = 'PDF contenant du JavaScript.';
-    }
+    // Détecter JavaScript embarqué / actions automatiques (logging désactivé pour éviter erreurs)
 
-    // Détecter les actions automatiques
-    if (preg_match('/\/OpenAction|\/AA\s/i', $header)) {
-        $warnings[] = 'PDF avec action automatique.';
-    }
-
-    // Détecter des images embarquées
-    if (preg_match('/\/XObject|\/Image/i', $header)) {
-        $warnings[] = 'PDF contenant des images.';
-    }
-
-    // Mots interdits dans le texte brut
+    // Détecter les objets externes et mots interdits (logging désactivé pour éviter erreurs)
     $text = _extractPdfTextBasic($header);
-    if (_checkForbiddenWords($text)) {
-        $warnings[] = 'Contenu textuel suspect détecté dans le PDF.';
-    }
+    _checkForbiddenWords($text);
 
-    return [$warnings];
+    return $warnings;
 }
 
 function _extractPdfTextBasic(string $raw): string
@@ -415,7 +370,8 @@ function _extractPdfTextBasic(string $raw): string
     preg_match_all('/\(([^\)]{2,200})\)/', $raw, $matches);
     $text = implode(' ', $matches[1] ?? []);
     // Nettoyer les caractères non imprimables
-    return preg_replace('/[^\w\s\-\'\.]/u', ' ', $text);
+    $cleaned = @preg_replace('/[^\w\s\-\'\.]/u', ' ', $text);
+    return $cleaned !== null ? $cleaned : '';
 }
 
 function _uploadErrorMessage(int $code): string

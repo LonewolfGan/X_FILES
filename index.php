@@ -1,67 +1,28 @@
 <?php
-require_once 'includes/config.php';
-require_once 'includes/db.php';
-require_once 'includes/auth.php';
+/**
+ * XFILES — Page d'accueil
+ */
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/functions.php';
 
-/** @var PDO $pdo  */
 $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PDO::FETCH_ASSOC);
+
+$pageTitle = 'XFILES - L\'Intelligence Collective';
+$pageCss = [
+    BASE_URL . 'css/index.css',
+    BASE_URL . 'css/buttons.css',
+    BASE_URL . 'css/cards.css',
+    BASE_URL . 'css/forms.css',
+    BASE_URL . 'css/footer.css',
+    BASE_URL . 'css/responsive.css',
+];
+include __DIR__ . '/includes/header.php';
 ?>
-<!doctype html>
-<html lang="fr" data-theme="light">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= $pageTitle ?? 'XFILES - L\'Intelligence Collective' ?></title>
-  <script>
-    (function() {
-      const saved = localStorage.getItem('theme');
-      const sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', saved || sys);
-    })();
-  </script>
-  <script src="/mini/assets/js/index.js?v=<?= time() ?>" defer></script>
-  <link rel="stylesheet" href="/mini/assets/css/style.css?v=<?= time() ?>" />
-  <link rel="stylesheet" href="/mini/assets/css/index.css?v=<?= time() ?>" />
-  <link rel="stylesheet" href="/mini/assets/css/components/buttons.css?v=<?= time() ?>" />
-  <link rel="stylesheet" href="/mini/assets/css/components/cards.css?v=<?= time() ?>" />
-  <link rel="stylesheet" href="/mini/assets/css/components/forms.css?v=<?= time() ?>" />
-  <link rel="stylesheet" href="/mini/assets/css/components/footer.css?v=<?= time() ?>" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
+  <script src="<?= BASE_URL ?>js/index.js?v=1.0.0" defer></script>
 
-<body>
-  <header>
-    <div class="container">
-      <nav class="navbar">
-        <a href="/mini/index.php" class="brand">
-          <i class="fa-solid fa-graduation-cap"></i> XFILES
-        </a>
-
-        <div class="nav-menu" id="nav-menu">
-          <div class="nav-links">
-            <a href="/mini/dashboard.php">Explorer</a>
-            <a href="/mini/index.php#ressources">Filières</a>
-            <a href="/mini/index.php#testimonials">À propos</a>
-          </div>
-          <div class="nav-actions">
-            <button id="theme-toggle" class="btn btn-ghost">
-              <i class="fa-solid fa-moon"></i> Mode sombre
-            </button>
-            <?php if (isLoggedIn()): ?>
-              <a href="/mini/dashboard.php" class="btn btn-primary">Go To Dashboard</a>
-            <?php else: ?>
-              <a href="/mini/register.php" class="btn btn-primary">Commencer</a>
-            <?php endif; ?>
-          </div>
-        </div>
-
-        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Menu">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-      </nav>
-    </div>
-  </header>
+  <?php include __DIR__ . '/includes/navbar.php'; ?>
 
   <header class="hero-header">
     <div class="container">
@@ -73,16 +34,16 @@ $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PD
             d'une communauté d'étudiants.
           </p>
           <div class="hero-actions">
-            <a href="/mini/register.php" class="btn btn-primary btn-lg">
+            <a href="<?= BASE_URL ?>pages/register.php" class="btn btn-primary btn-lg">
               <i class="fa-solid fa-cloud-arrow-up"></i> Commencer
             </a>
-            <a href="/mini/dashboard.php" class="btn btn-secondary btn-lg">
+            <a href="<?= BASE_URL ?>pages/dashboard.php" class="btn btn-secondary btn-lg">
               <i class="fa-solid fa-magnifying-glass"></i> Explorer les Ressources
             </a>
           </div>
         </div>
         <div class="hero-visual">
-          <img src="/mini/assets/img/Team-pana.png" alt="Illustration collaborative" class="hero-image-animate" />
+          <img src="<?= BASE_URL ?>images/Team-pana.png" alt="Illustration collaborative" class="hero-image-animate" />
         </div>
       </div>
     </div>
@@ -92,20 +53,11 @@ $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PD
     <section id="ressources" class="container section-ressources">
       <h2 class="section-title">Nos Ressources Académiques</h2>
       <div class="ressources-grid">
-        <?php
-        $categories = [
-          ['icon' => 'fa-laptop-code',    'title' => 'Informatique',      'link' => '/mini/dashboard.php?filiere=IL'],
-          ['icon' => 'fa-calculator',     'title' => 'Mathématiques',     'link' => '/mini/dashboard.php?filiere=SDBDIA'],
-          ['icon' => 'fa-briefcase',      'title' => 'Management',        'link' => '/mini/dashboard.php?filiere=MGSI'],
-          ['icon' => 'fa-flask',          'title' => 'Sciences',          'link' => '/mini/dashboard.php?filiere=SITCN'],
-          ['icon' => 'fa-scale-balanced', 'title' => 'Droit & Sciences Po', 'link' => '/mini/dashboard.php'],
-          ['icon' => 'fa-language',       'title' => 'Langues & Lettres', 'link' => '/mini/dashboard.php'],
-        ];
-        foreach ($categories as $cat): ?>
+        <?php foreach ($filieres as $f): ?>
           <div class="card ressource-card">
-            <div class="ressource-icon"><i class="fa-solid <?= $cat['icon'] ?>"></i></div>
-            <h3 class="ressource-title"><?= htmlspecialchars($cat['title']) ?></h3>
-            <a href="<?= htmlspecialchars($cat['link']) ?>" class="btn btn-outline">Explorer <i class="fa-solid fa-arrow-right"></i></a>
+            <div class="ressource-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h3 class="ressource-title"><?= htmlspecialchars($f['name']) ?></h3>
+            <a href="<?= BASE_URL ?>pages/dashboard.php?filiere=<?= htmlspecialchars($f['code']) ?>" class="btn btn-outline">Explorer <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         <?php endforeach; ?>
       </div>
@@ -145,7 +97,7 @@ $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PD
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="/mini/index.php" class="brand">
+          <a href="<?= BASE_URL ?>pages/login.php" class="brand">
             <i class="fa-solid fa-graduation-cap"></i> XFILES
           </a>
           <p class="footer-desc">
@@ -162,30 +114,27 @@ $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PD
         <div class="footer-links">
           <h4>Ressources</h4>
           <ul>
-            <li><a href="/mini/dashboard.php?type=cours">Cours & Synthèses</a></li>
-            <li><a href="/mini/dashboard.php?type=examen">Annales d'examens</a></li>
-            <li><a href="/mini/dashboard.php?type=tp">Tutoriels</a></li>
-            <li><a href="/mini/dashboard.php">Filières</a></li>
+            <li><a href="<?= BASE_URL ?>pages/dashboard.php?type=cours">Cours & Synthèses</a></li>
+            <li><a href="<?= BASE_URL ?>pages/dashboard.php?type=examen">Annales d'examens</a></li>
+            <li><a href="<?= BASE_URL ?>pages/dashboard.php?type=tp">Tutoriels</a></li>
+            <li><a href="<?= BASE_URL ?>pages/dashboard.php">Filières</a></li>
           </ul>
         </div>
 
         <div class="footer-links">
           <h4>Communauté</h4>
           <ul>
-            <li><a href="/mini/dashboard.php?sort=recent">Classements</a></li>
-            <li><a href="/mini/dashboard.php">Top Contributeurs</a></li>
-            <li><a href="/mini/dashboard.php">Forum d'entraide</a></li>
-            <li><a href="#">Règles</a></li>
+            <li><a href="<?= BASE_URL ?>pages/dashboard.php">Dashboard</a></li>
+            <li><a href="<?= BASE_URL ?>pages/register.php">S'inscrire</a></li>
+            <li><a href="<?= BASE_URL ?>pages/login.php">Se connecter</a></li>
           </ul>
         </div>
 
         <div class="footer-links">
           <h4>XFILES</h4>
           <ul>
-            <li><a href="/mini/index.php#about">À propos</a></li>
-            <li><a href="mailto:contact@xfiles.local">Nous contacter</a></li>
-            <li><a href="#">Mentions légales</a></li>
-            <li><a href="#">Confidentialité</a></li>
+            <li><a href="<?= BASE_URL ?>index.php">Accueil</a></li>
+            <li><a href="mailto:honoretchohlo02@gmail.com">Nous contacter</a></li>
           </ul>
         </div>
       </div>
@@ -195,5 +144,4 @@ $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PD
     </div>
   </footer>
 </body>
-
 </html>

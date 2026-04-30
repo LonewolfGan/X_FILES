@@ -1,37 +1,71 @@
 <?php
-session_start();
+/**
+ * XFILES — Authentification et contrôle d'accès
+ * Sessions, password_hash/verify, RBAC, mot de passe oublié
+ */
 
-function isLoggedIn() {
+// --- VÉRIFICATION DE SESSION ---
+
+function isLoggedIn(): bool
+{
     return isset($_SESSION['user_id']);
 }
 
-function isAdmin() {
+function isAdmin(): bool
+{
     return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
 
-function requireLogin() {
+function hasRole(string $role): bool
+{
+    return isset($_SESSION['role']) && $_SESSION['role'] === $role;
+}
+
+function requireLogin(): void
+{
     if (!isLoggedIn()) {
-        header('Location: ' . BASE_URL . 'login.php');
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        header('Location: ' . BASE_URL . 'pages/login.php');
         exit;
     }
 }
 
-function requireAdmin() {
+function requireAdmin(): void
+{
+    requireLogin();
     if (!isAdmin()) {
+        http_response_code(403);
+        header('Location: ' . BASE_URL . 'pages/dashboard.php');
+        exit;
+    }
+}
+
+function requireRole(string $role): void
+{
+    requireLogin();
+    if (!hasRole($role)) {
+        http_response_code(403);
         header('Location: ' . BASE_URL . 'index.php');
         exit;
     }
 }
 
-function login($email, $password, $pdo) {
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
-    $stmt->execute([$email]);
+// --- AUTHENTIFICATION ---
+
+/**
+ * Connecte un utilisateur par login (pas email)
+ */
+function login(string $login, string $password, PDO $pdo): bool
+{
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE login = ?');
+    $stmt->execute([$login]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
         session_regenerate_id(true);
         $_SESSION['user_id']     = $user['id'];
         $_SESSION['user_name']   = $user['name'];
+        $_SESSION['user_login']  = $user['login'];
         $_SESSION['user_avatar'] = $user['avatar'];
         $_SESSION['role']        = $user['role'];
         return true;
@@ -39,45 +73,95 @@ function login($email, $password, $pdo) {
     return false;
 }
 
-function logout() {
+/**
+ * Déconnecte l'utilisateur et détruit la session
+ */
+function logout(): void
+{
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params['path'], $params['domain'],
+            $params['secure'], $params['httponly']
+        );
+    }
     session_destroy();
-    header('Location: ' . BASE_URL . 'login.php');
+    header('Location: ' . BASE_URL . 'pages/login.php');
     exit;
 }
 
-function getCurrentUser($pdo) {
+/**
+ * Récupère l'utilisateur courant depuis la BDD
+ */
+function getCurrentUser(PDO $pdo): ?array
+{
     if (!isLoggedIn()) return null;
     $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
     $stmt->execute([$_SESSION['user_id']]);
-    return $stmt->fetch();
+    return $stmt->fetch() ?: null;
 }
 
+// --- INSCRIPTION ---
+
 /**
- * Enregistre un nouvel utilisateur.
- * Retourne un tableau d'erreurs (vide si succès).
+ * Enregistre un nouvel utilisateur avec validation
+ * Retourne un tableau d'erreurs (vide si succès)
  */
-function register($name, $email, $password, $confirm, $filiere, $pdo) {
+function register(string $name, string $login, string $password, string $confirm, string $filiere, PDO $pdo): array
+{
     $errors = [];
-    
+
     if (empty($name))                                                $errors[] = 'Le nom est obligatoire.';
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Email invalide.';
+    if (empty($login))                                               $errors[] = 'Le login est obligatoire.';
+    if (strlen($login) < 3)                                          $errors[] = 'Le login doit contenir au moins 3 caractères.';
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $login))                   $errors[] = 'Le login ne peut contenir que des lettres, chiffres et _.';
     if (strlen($password) < 8)                                       $errors[] = 'Le mot de passe doit contenir au moins 8 caractères.';
     if ($password !== $confirm)                                      $errors[] = 'Les mots de passe ne correspondent pas.';
     if (empty($filiere))                                             $errors[] = 'Veuillez choisir une filière.';
 
     if (empty($errors)) {
-        $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
-        $stmt->execute([$email]);
-        if ($stmt->fetch()) $errors[] = 'Cet email est déjà utilisé.';
+        $stmt = $pdo->prepare('SELECT id FROM users WHERE login = ?');
+        $stmt->execute([$login]);
+        if ($stmt->fetch()) $errors[] = 'Ce login est déjà utilisé.';
     }
 
     if (empty($errors)) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare('INSERT INTO users (name, email, password_hash, filiere_code) VALUES (?, ?, ?, ?)');
-        $stmt->execute([$name, $email, $hash, $filiere]);
+        $stmt = $pdo->prepare('INSERT INTO users (name, login, password_hash, filiere_code) VALUES (?, ?, ?, ?)');
+        $stmt->execute([$name, $login, $hash, $filiere]);
         
-        // Auto-connexion
-        login($email, $password, $pdo);
+        // Auto-login après inscription
+        if (!login($login, $password, $pdo)) {
+            $errors[] = 'Compte créé mais erreur lors de la connexion automatique. Veuillez vous connecter manuellement.';
+        }
+    }
+
+    return $errors;
+}
+
+// --- MOT DE PASSE OUBLIÉ (Reset par admin uniquement) ---
+
+/**
+ * Réinitialise le mot de passe d'un utilisateur par un administrateur
+ * Retourne un tableau d'erreurs (vide si succès)
+ */
+function adminResetPassword(string $userId, string $newPassword, string $confirm, PDO $pdo): array
+{
+    $errors = [];
+
+    if (strlen($newPassword) < 8)      $errors[] = 'Le mot de passe doit contenir au moins 8 caractères.';
+    if ($newPassword !== $confirm)      $errors[] = 'Les mots de passe ne correspondent pas.';
+
+    $userId = (int)$userId;
+    $stmt = $pdo->prepare('SELECT id FROM users WHERE id = ?');
+    $stmt->execute([$userId]);
+    if (!$stmt->fetch()) $errors[] = 'Utilisateur non trouvé.';
+
+    if (empty($errors)) {
+        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare('UPDATE users SET password_hash = ? WHERE id = ?');
+        $stmt->execute([$hash, $userId]);
     }
 
     return $errors;
