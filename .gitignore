@@ -17,3 +17,10 @@ mySkills/
 
 # Uploads
 uploads/
+
+# Documentation
+doc/
+
+# Sensitive config files
+config.infinityfree.php
+*.ini
