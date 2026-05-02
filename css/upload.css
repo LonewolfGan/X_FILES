@@ -1,0 +1,79 @@
+.upload-container {
+    max-width: 700px;
+    margin: 2rem auto;
+}
+
+.upload-card {
+    padding: 2.5rem;
+    border-radius: 15px;
+}
+
+.upload-card .form-group {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+}
+
+.upload-card .form-row {
+    margin-bottom: 2rem;
+    gap: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+}
+
+.upload-card .form-label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.upload-card .form-control {
+    width: 100% !important;
+}
+
+.drop-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    background: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.drop-zone:hover,
+.drop-zone.active {
+    border-color: var(--primary);
+    background: var(--primary-transparent);
+}
+
+.drop-zone i {
+    font-size: 2.5rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.drop-zone p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.file-name-display {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    display: none;
+}

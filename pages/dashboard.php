@@ -417,61 +417,7 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
 <body class="dashboard-mode">
     <div class="dashboard-wrapper">
-        <!-- Sidebar Intégré -->
-        <aside class="dashboard-sidebar">
-            <a href="<?= BASE_URL ?>index.php" class="sidebar-logo">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span class="brand-text">XFILES</span>
-            </a>
-
-            <nav class="sidebar-nav">
-                <a href="<?= BASE_URL ?>pages/dashboard.php" class="nav-item <?= ($currentPage === 'dashboard.php' && empty($sidebarView) && empty($sidebarTypes)) ? 'active' : '' ?>">
-                    <i class="fa-solid fa-border-all"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="<?= BASE_URL ?>pages/dashboard.php?view=my-docs" class="nav-item <?= ($sidebarView === 'my-docs') ? 'active' : '' ?>">
-                    <i class="fa-solid fa-folder-open"></i>
-                    <span>Mes documents</span>
-                </a>
-                <?php if ($isAdmin): ?>
-                    <a href="<?= BASE_URL ?>pages/admin.php" class="nav-item <?= ($currentPage === 'admin.php') ? 'active' : '' ?>">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Administration</span>
-                    </a>
-                <?php endif; ?>
-                <a href="<?= BASE_URL ?>pages/dashboard.php?view=settings" class="nav-item <?= ($sidebarView === 'settings') ? 'active' : '' ?>">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>Paramètres</span>
-                </a>
-                <a href="<?= BASE_URL ?>pages/dashboard.php?types=cours" class="nav-item <?= (in_array('cours', $sidebarTypes)) ? 'active' : '' ?>">
-                    <i class="fa-solid fa-book"></i>
-                    <span>Cours</span>
-                </a>
-                <a href="<?= BASE_URL ?>pages/dashboard.php?types=td" class="nav-item <?= (in_array('td', $sidebarTypes)) ? 'active' : '' ?>">
-                    <i class="fa-solid fa-list-check"></i>
-                    <span>Travaux Dirigés</span>
-                </a>
-                <a href="<?= BASE_URL ?>pages/dashboard.php?types=tp" class="nav-item <?= (in_array('tp', $sidebarTypes)) ? 'active' : '' ?>">
-                    <i class="fa-solid fa-flask"></i>
-                    <span>Travaux Pratiques</span>
-                </a>
-                <a href="<?= BASE_URL ?>pages/dashboard.php?types=examen" class="nav-item <?= (in_array('examen', $sidebarTypes)) ? 'active' : '' ?>">
-                    <i class="fa-solid fa-file-circle-question"></i>
-                    <span>Examens</span>
-                </a>
-                <a href="<?= BASE_URL ?>pages/dashboard.php?types=resume" class="nav-item <?= (in_array('resume', $sidebarTypes)) ? 'active' : '' ?>">
-                    <i class="fa-solid fa-note-sticky"></i>
-                    <span>Résumés</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <a href="<?= BASE_URL ?>pages/logout.php" class="nav-item">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Quitter</span>
-                </a>
-            </div>
-        </aside>
+        <?php include '../includes/sidebar.php'; ?>
 
         <main class="dashboard-content">
             <header class="dashboard-header <?= in_array($view, ['settings', 'my-docs']) ? 'header-centered' : '' ?>">
@@ -557,8 +503,8 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Login</label>
-                                    <input type="text" class="form-control" value="@<?= htmlspecialchars($userLogin) ?>" disabled style="background: var(--bg-main); opacity: 0.7;">
-                                    <small style="color: var(--text-muted);">Le login ne peut pas être modifié</small>
+                                    <input type="text" class="form-control" value="@<?= htmlspecialchars($userLogin) ?>" disabled>
+                                    <small class="form-hint">Le login ne peut pas être modifié</small>
                                 </div>
                             </div>
 
@@ -691,11 +637,11 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                                 <?= date('d/m/Y H:i', strtotime($doc['created_at'])) ?>
                                             </td>
                                             <td class="my-docs-actions-cell">
-                                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                                <div class="action-btn-group">
                                                     <a href="<?= BASE_URL ?>pages/view.php?id=<?= (int)$doc['id'] ?>" target="_blank" class="btn btn-sm btn-secondary my-docs-action-btn" title="Voir">
                                                         <i class="fa-solid fa-eye"></i>
                                                     </a>
-                                                    <a href="<?= BASE_URL ?>pages/download.php?id=<?= (int)$doc['id'] ?>" class="btn btn-sm my-docs-action-btn" title="Télécharger" style="background: var(--primary); color: var(--black);">
+                                                    <a href="<?= BASE_URL ?>pages/download.php?id=<?= (int)$doc['id'] ?>" class="btn btn-sm btn-primary my-docs-action-btn" title="Télécharger">
                                                         <i class="fa-solid fa-download"></i>
                                                     </a>
 
@@ -703,7 +649,7 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                                         <?= csrfField() ?>
                                                         <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                                                         <input type="hidden" name="delete_own_doc" value="1">
-                                                        <button type="submit" class="btn btn-sm my-docs-action-btn" style="background: var(--primary); color: var(--black);">
+                                                        <button type="submit" class="btn btn-sm btn-primary my-docs-action-btn">
                                                             <i class="fa-solid fa-trash"></i> Supprimer
                                                         </button>
                                                     </form>
@@ -770,7 +716,7 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                             <i class="fa-regular fa-bookmark icon-muted"></i>
                                         </div>
 
-                                        <h3 onclick="openPreview(<?= $doc['id'] ?>)" style="cursor: pointer;"><?= htmlspecialchars($doc['title']) ?></h3>
+                                        <h3 class="doc-card-title" onclick="openPreview(<?= $doc['id'] ?>)"><?= htmlspecialchars($doc['title']) ?></h3>
 
                                         <div class="doc-module-row" onclick="openPreview(<?= $doc['id'] ?>)">
                                             <i class="fa-solid fa-layer-group"></i>
@@ -787,11 +733,11 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                                 src="<?= htmlspecialchars($doc['author_avatar'] ?: 'https://ui-avatars.com/api/?name=' . urlencode($doc['author_name'] ?? 'X')) ?>"
                                                 alt="Auteur"
                                                 class="doc-card-avatar">
-                                            <div style="display: flex; gap: 0.5rem;">
+                                            <div class="doc-card-actions">
                                                 <a href="<?= BASE_URL ?>pages/view.php?id=<?= (int)$doc['id'] ?>" target="_blank" class="btn btn-sm btn-secondary" title="Voir">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
-                                                <a href="<?= BASE_URL ?>pages/download.php?id=<?= (int)$doc['id'] ?>" class="btn btn-sm" title="Télécharger" style="background: var(--primary); color: var(--black);">
+                                                <a href="<?= BASE_URL ?>pages/download.php?id=<?= (int)$doc['id'] ?>" class="btn btn-sm btn-primary" title="Télécharger">
                                                     <i class="fa-solid fa-download"></i>
                                                 </a>
                                             </div>
@@ -918,7 +864,7 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                 <input type="hidden" name="user_id" id="confirmUserId">
                                 <input type="hidden" name="author_name" id="confirmAuthorName">
                                 <input type="hidden" name="rejection_reason" id="confirmRejectionReason">
-                                <button type="submit" class="btn btn-primary" style="background: var(--primary); color: var(--black);">
+                                <button type="submit" class="btn btn-primary">
                                     <i class="fa-solid fa-paper-plane"></i> Demander revue
                                 </button>
                             </form>
@@ -929,125 +875,6 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         </div>
     </div>
 
-    <style>
-        #reviewModal .modal-container {
-            max-width: 420px;
-            width: 90%;
-        }
-        #reviewModal .modal-content {
-            padding: 1.5rem;
-        }
-        .review-modal-body {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-        .review-modal-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .review-modal-header-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary-transparent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .review-modal-header-icon i {
-            color: var(--primary);
-            font-size: 0.9rem;
-        }
-        .review-modal-header-text {
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin: 0;
-            line-height: 1.4;
-        }
-        .review-modal-reason-box {
-            background: transparent;
-            border: none;
-            padding: 0;
-        }
-        .review-modal-reason-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        .review-modal-reason-text {
-            font-size: 0.9rem;
-            color: var(--text-main);
-            line-height: 1.6;
-            word-break: break-word;
-        }
-        .review-modal-footer {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding-top: 0.5rem;
-        }
-        .review-modal-help-text {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-align: center;
-            margin: 0;
-            line-height: 1.4;
-        }
-        .review-modal-buttons {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: center;
-        }
-        .review-modal-buttons form {
-            display: inline;
-        }
-        .review-modal-buttons .btn {
-            padding: 0.625rem 1.25rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: var(--radius-md);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s ease;
-        }
-        .review-modal-buttons .btn-primary {
-            background: var(--primary);
-            color: var(--black);
-        }
-        .review-modal-buttons .btn-primary:hover {
-            background: var(--primary-hover);
-        }
-        .review-modal-buttons .btn-secondary {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-        }
-        .review-modal-buttons .btn-secondary:hover {
-            border-color: var(--text-main);
-            color: var(--text-main);
-        }
-        @media (max-width: 480px) {
-            .review-modal-buttons {
-                flex-direction: column-reverse;
-            }
-            .review-modal-buttons .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-    </style>
 
     <script>
         // Review Modal Functions (part 1 - no XModal dependency)
@@ -1089,75 +916,14 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             }
         });
 
-        (function() {
-            var btn = document.getElementById('dash-theme-toggle');
-            var html = document.documentElement;
-
-            function updateIcon() {
-                btn.innerHTML = html.getAttribute('data-theme') === 'dark' ?
-                    '<i class="fa-solid fa-sun"></i>' :
-                    '<i class="fa-solid fa-moon"></i>';
-            }
-            updateIcon();
-            btn.addEventListener('click', function() {
-                var t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                html.setAttribute('data-theme', t);
-                localStorage.setItem('theme', t);
-                updateIcon();
-            });
-        })();
-
         // Preview functions - open in new tab using browser native preview
         function openPreview(docId) {
             const viewUrl = '<?= BASE_URL ?>pages/view.php?id=' + docId;
             window.open(viewUrl, '_blank');
         }
 
-        // Mobile sidebar toggle
-        (function() {
-            var sidebar = document.querySelector('.dashboard-sidebar');
-            var overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-
-            var toggleBtn = document.createElement('button');
-            toggleBtn.className = 'mobile-sidebar-toggle';
-            toggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-            toggleBtn.setAttribute('aria-label', 'Menu');
-            document.body.appendChild(toggleBtn);
-
-            function openSidebar() {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                toggleBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-            }
-
-            function closeSidebar() {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                toggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-            }
-
-            toggleBtn.addEventListener('click', function() {
-                if (sidebar.classList.contains('active')) {
-                    closeSidebar();
-                } else {
-                    openSidebar();
-                }
-            });
-
-            overlay.addEventListener('click', closeSidebar);
-
-            // Close sidebar when clicking a nav item on mobile
-            document.querySelectorAll('.sidebar-nav a').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 1024) {
-                        closeSidebar();
-                    }
-                });
-            });
-        })();
     </script>
+    <script src="<?= BASE_URL ?>js/dashboard.js"></script>
     <script src="<?= BASE_URL ?>js/modal.js"></script>
 
     <script>

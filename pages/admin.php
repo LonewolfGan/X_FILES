@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Supprimer un document (suppression fichier disque + DB)
     if (isset($_POST['delete_doc'])) {
         $docId = intval($_POST['doc_id'] ?? 0);
-        error_log("ADMIN DELETE: doc_id=$docId, POST data=" . json_encode($_POST));
         
         if ($docId > 0) {
             // Récupérer le fichier avant suppression
@@ -40,17 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("DELETE FROM documents WHERE id = ?");
                 if ($stmt->execute([$docId])) {
                     $success = "Document supprimé avec succès.";
-                    error_log("ADMIN DELETE: Success - doc_id=$docId, title=" . ($doc['title'] ?? 'N/A'));
                 } else {
                     $errors[] = "Erreur lors de la suppression du document.";
-                    error_log("ADMIN DELETE: Failed - " . json_encode($stmt->errorInfo()));
                 }
             } else {
                 $errors[] = "Document non trouvé.";
             }
         } else {
             $errors[] = "ID de document invalide.";
-            error_log("ADMIN DELETE: Invalid doc_id");
         }
     }
 
@@ -223,98 +219,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             document.documentElement.setAttribute('data-theme', s || sys);
         })();
     </script>
-    <style>
-        /* Styles spécifiques Admin */
-        .admin-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .admin-title { font-size: 1.75rem; font-weight: 700; }
-        .admin-badge { background: var(--primary); color: var(--black); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
-        
-        /* Stats Grid */
-        .stats-grid { display: flex; flex-direction: row; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: nowrap; }
-        .stat-card { background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); flex: 1; min-width: 0; }
-        @media (max-width: 1024px) {
-            .stats-grid { flex-wrap: wrap; }
-            .stat-card { flex: 1 1 calc(50% - 0.75rem); min-width: 200px; }
-        }
-        @media (max-width: 640px) {
-            .stat-card { flex: 1 1 100%; }
-        }
-        .stat-value { font-size: 2rem; font-weight: 700; color: var(--text-main); }
-        .stat-label { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem; }
-        .stat-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; background: var(--primary-transparent); color: var(--primary); }
-        
-        /* Admin Sections */
-        .admin-section { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem; }
-        .section-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .section-title { font-size: 1.125rem; font-weight: 600; }
-        .section-content { padding: 1.5rem; }
-        
-        /* Data Table */
-        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .data-table th { text-align: left; padding: 0.75rem; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border-color); background: transparent; }
-        .data-table td { padding: 0.75rem; border-bottom: 1px solid var(--border-color); font-size: 0.875rem; }
-        .data-table tbody tr { border-radius: var(--radius-md); transition: background 0.2s; }
-        .data-table tbody tr:hover { background: var(--primary-transparent); }
-        .data-table tbody tr:hover td:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
-        .data-table tbody tr:hover td:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
-        .data-table tbody tr:last-child td { border-bottom: none; }
-        /* Empty state */
-        .empty-state { text-align: center; padding: 3rem 1.5rem; color: var(--text-muted); }
-        .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
-        .empty-state p { font-size: 1rem; }
-        
-        /* Badges */
-        .badge { display: inline-flex; padding: 0.25rem 0.5rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500; min-width: 60px; justify-content: center; }
-        .badge-success { background: var(--primary-transparent); color: var(--primary); }
-        .badge-warning { background: var(--secondary-transparent); color: var(--text-main); }
-        .badge-danger { background: var(--primary-transparent); color: var(--black); }
-        [data-theme="dark"] .badge-danger { background: var(--primary-transparent); }
-        
-        /* Buttons */
-        .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; border: none; cursor: pointer; border-radius: var(--radius-md); transition: all 0.2s; }
-        .btn-success { background: var(--primary); color: var(--black); }
-        .btn-success:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        .btn-danger { background: var(--black); color: var(--primary); }
-        .btn-danger:hover { background: var(--secondary-hover); transform: translateY(-1px); }
-        .btn-secondary { background: var(--bg-tertiary); color: var(--text-main); border: 1px solid var(--border-color); }
-        .btn-secondary:hover { background: var(--border-color); }
-        
-        /* Action Buttons */
-        .action-buttons { display: flex; gap: 0.5rem; align-items: center; }
-        .action-buttons .btn-sm { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; }
-        
-        /* File link with preview */
-        .file-link { color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .file-link:hover { text-decoration: underline; }
-        .preview-btn { color: var(--primary); cursor: pointer; background: var(--primary-transparent); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; margin-left: 0.5rem; border: none; }
-        .preview-btn:hover { background: var(--primary); color: var(--black); }
-        
-        /* Document & User */
-        .doc-title { font-weight: 500; color: var(--text-main); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-decoration: none; }
-        .doc-title:hover { color: var(--primary); }
-        .doc-meta { font-size: 0.75rem; color: var(--text-muted); }
-        .user-info { display: flex; align-items: center; gap: 0.75rem; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .user-name { font-weight: 500; }
-        .user-email { font-size: 0.75rem; color: var(--text-muted); }
-        
-        /* Tabs */
-        .tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
-        .tab { padding: 0.75rem 1rem; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
-        .tab.active { color: var(--text-main); border-bottom-color: var(--primary); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-        @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 640px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .data-table { font-size: 0.75rem; }
-            .data-table th, .data-table td { padding: 0.5rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/admin.css?v=1.1.0">
 </head>
 <body class="dashboard-mode">
     <div class="dashboard-wrapper">
@@ -341,8 +246,8 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             
             <div class="admin-container">
                 <?php if ($success): ?>
-                    <div class="alert alert-success" id="successAlert" style="color: var(--text-main);">
-                        <i class="fa-solid fa-check-circle" style="color: var(--text-main);"></i>
+                    <div class="alert alert-success" id="successAlert">
+                        <i class="fa-solid fa-check-circle"></i>
                         <span><?= htmlspecialchars($success) ?></span>
                     </div>
                     <script>
@@ -354,9 +259,9 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                 <?php endif; ?>
                 
                 <?php if (!empty($errors)): ?>
-                    <div class="alert alert-danger" id="errorAlert" style="color: var(--text-main);">
-                        <i class="fa-solid fa-circle-exclamation" style="color: var(--text-main);"></i>
-                        <ul class="error-list" style="margin: 0;">
+                    <div class="alert alert-danger" id="errorAlert">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <ul class="error-list">
                             <?php foreach ($errors as $error): ?>
                                 <li><?= htmlspecialchars($error) ?></li>
                             <?php endforeach; ?>
@@ -407,7 +312,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                             <span class="badge danger"><?= $stats['pending_docs'] ?></span>
                         <?php endif; ?>
                         <?php if ($reviewRequestsCount > 0): ?>
-                            <span style="color: var(--text-main); font-size: 0.75rem; margin-left: 0.25rem;">(<?= $reviewRequestsCount ?> revue<?= $reviewRequestsCount > 1 ? 's' : '' ?>)</span>
+                            <span class="review-count">(<?= $reviewRequestsCount ?> revue<?= $reviewRequestsCount > 1 ? 's' : '' ?>)</span>
                         <?php endif; ?>
                     </div>
                     <div class="tab" data-tab="docs">Documents</div>
@@ -421,13 +326,13 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                             <h2 class="section-title">Documents en attente de validation</h2>
                             <span class="badge <?= $stats['pending_docs'] > 0 ? 'danger' : '' ?>"><?= count($pendingDocs) ?> en attente</span>
                             <?php if ($reviewRequestsCount > 0): ?>
-                                <span class="badge" style="background: var(--primary-transparent); color: var(--text-main); margin-left: 0.5rem;"><i class="fa-solid fa-flag"></i> <?= $reviewRequestsCount ?> demande<?= $reviewRequestsCount > 1 ? 's' : '' ?> de revue</span>
+                                <span class="badge badge-review"><i class="fa-solid fa-flag"></i> <?= $reviewRequestsCount ?> demande<?= $reviewRequestsCount > 1 ? 's' : '' ?> de revue</span>
                             <?php endif; ?>
                         </div>
-                        <div class="section-content" style="overflow-x: auto;">
+                        <div class="section-content section-content-scroll">
                             <?php if (empty($pendingDocs)): ?>
-                                <div class="empty-state" style="text-align: center; padding: 3rem;">
-                                    <i class="fa-solid fa-check-circle" style="font-size: 3rem; color: var(--success-color); margin-bottom: 1rem;"></i>
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-check-circle icon-success"></i>
                                     <p>Aucun document en attente de validation.</p>
                                 </div>
                             <?php else: ?>
@@ -450,11 +355,11 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                             <tr>
                                                 <td><?= $doc['id'] ?></td>
                                                 <td>
-                                                    <div style="display: flex; gap: 0.5rem;">
+                                                    <div class="action-btn-group">
                                                         <a href="<?= BASE_URL ?>pages/view.php?id=<?= (int)$doc['id'] ?>" target="_blank" class="preview-btn" title="Voir">
                                                             <i class="fa-solid fa-eye"></i>
                                                         </a>
-                                                        <a href="<?= BASE_URL ?>pages/download.php?id=<?= (int)$doc['id'] ?>" class="preview-btn" title="Télécharger" style="background: var(--primary); color: var(--black);">
+                                                        <a href="<?= BASE_URL ?>pages/download.php?id=<?= (int)$doc['id'] ?>" class="preview-btn preview-btn-primary" title="Télécharger">
                                                             <i class="fa-solid fa-download"></i>
                                                         </a>
                                                     </div>
@@ -465,9 +370,9 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                                 <td><?= e($doc['module_name'] ?? 'N/A') ?></td>
                                                 <td>
                                                     <?php if (isset($doc['review_requested']) && $doc['review_requested']): ?>
-                                                        <span class="badge" style="background: var(--primary-transparent); color: var(--text-main);"><i class="fa-solid fa-flag"></i> Revue demandée</span>
+                                                        <span class="badge badge-review"><i class="fa-solid fa-flag"></i> Revue demandée</span>
                                                         <?php if (!empty($doc['rejection_reason'])): ?>
-                                                            <br><small style="color: var(--text-muted);">Rejet: <?= e($doc['rejection_reason']) ?></small>
+                                                            <br><small class="text-muted">Rejet: <?= e($doc['rejection_reason']) ?></small>
                                                         <?php endif; ?>
                                                     <?php else: ?>
                                                         <span class="badge warning"><?= e($doc['rejection_reason'] ?? 'En attente') ?></span>
@@ -475,15 +380,15 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                                 </td>
                                                 <td><?= date('d/m/Y H:i', strtotime($doc['created_at'])) ?></td>
                                                 <td>
-                                                    <div class="action-buttons" style="display: flex; gap: 0.5rem; align-items: center;">
-                                                        <form method="POST" style="display:inline;">
+                                                    <div class="action-buttons">
+                                                        <form method="POST" class="form-inline">
                                                             <?= csrfField() ?>
                                                             <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                                                             <button type="submit" name="approve_doc" class="btn btn-success btn-sm" title="Approuver">
                                                                 <i class="fa-solid fa-check"></i>
                                                             </button>
                                                         </form>
-                                                        <form id="rejectForm<?= (int)$doc['id'] ?>" method="POST" style="display:inline;">
+                                                        <form id="rejectForm<?= (int)$doc['id'] ?>" method="POST" class="form-inline">
                                                             <?= csrfField() ?>
                                                             <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                                                             <input type="hidden" name="rejection_reason" value="Document rejeté par l'administrateur">
@@ -516,7 +421,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                             <p>Aucun document</p>
                         </div>
                         <?php else: ?>
-                        <div class="section-content" style="overflow-x: auto;">
+                        <div class="section-content section-content-scroll">
                             <table class="data-table">
                                 <thead>
                                     <tr>
@@ -554,12 +459,12 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                             </td>
                                             <td><?= date('d/m/Y H:i', strtotime($doc['created_at'])) ?></td>
                                             <td>
-                                                <form id="delForm<?= (int)$doc['id'] ?>" method="POST" style="display:inline;">
+                                                <form id="delForm<?= (int)$doc['id'] ?>" method="POST" class="form-inline">
                                                     <?= csrfField() ?>
                                                     <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                                                     <input type="hidden" name="delete_doc" value="1">
                                                 </form>
-                                                <button type="button" onclick="confirmDeleteDoc(<?= (int)$doc['id'] ?>)" class="btn btn-sm" style="background: var(--primary); color: var(--black);">
+                                                <button type="button" onclick="confirmDeleteDoc(<?= (int)$doc['id'] ?>)" class="btn btn-sm btn-success">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </td>
@@ -585,7 +490,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                             <p>Aucun utilisateur</p>
                         </div>
                         <?php else: ?>
-                        <div class="section-content" style="overflow-x: auto;">
+                        <div class="section-content section-content-scroll">
                             <table class="data-table">
                                 <thead>
                                     <tr>
@@ -622,9 +527,9 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                             <td><?= $user['doc_count'] ?></td>
                                             <td><?= date('d/m/Y', strtotime($user['created_at'])) ?></td>
                                             <td>
-                                                <div style="display: flex; gap: 0.5rem;">
+                                                <div class="action-btn-group">
                                                     <?php if ($user['id'] !== $currentUser['id']): ?>
-                                                        <form method="post" style="display: inline;">
+                                                        <form method="post" class="form-inline">
                                                             <?= csrfField() ?>
                                                             <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
                                                             <input type="hidden" name="new_role" value="<?= $user['role'] === 'admin' ? 'etudiant' : 'admin' ?>">
@@ -635,7 +540,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                                         <button type="button" class="btn btn-sm" title="Réinitialiser le mot de passe" onclick='showResetModal(<?= (int)$user['id'] ?>, <?= json_encode($user['login']) ?>)'>
                                                             <i class="fa-solid fa-key"></i>
                                                         </button>
-                                                        <form id="userDelForm<?= $user['id'] ?>" method="post" style="display: inline;">
+                                                        <form id="userDelForm<?= $user['id'] ?>" method="post" class="form-inline">
                                                             <?= csrfField() ?>
                                                             <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
                                                             <input type="hidden" name="delete_user" value="1">
@@ -662,21 +567,21 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
 
     <!-- Modal Message (erreurs/succès) -->
     <div id="messageModal" class="modal-overlay" style="display: none; z-index: 9999;" onclick="closeMessageModal(event)">
-        <div class="modal-container" style="max-width: 400px; text-align: center;" onclick="event.stopPropagation()">
+        <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <div id="messageIcon" style="font-size: 3rem; margin-bottom: 0.5rem;"></div>
+                <div id="messageIcon"></div>
             </div>
             <div class="modal-content">
-                <h3 id="messageTitle" style="margin-bottom: 1rem;"></h3>
-                <p id="messageText" style="color: var(--text-muted); margin-bottom: 1.5rem;"></p>
-                <button type="button" class="btn btn-primary" onclick="closeMessageModal()" style="min-width: 100px;">OK</button>
+                <h3 id="messageTitle"></h3>
+                <p id="messageText"></p>
+                <button type="button" class="btn btn-primary" onclick="closeMessageModal()">OK</button>
             </div>
         </div>
     </div>
 
     <!-- Modal Confirm -->
     <div id="confirmModal" class="modal-overlay" style="display: none; z-index: 9999;" onclick="closeConfirmModal(event)">
-        <div class="modal-container" style="max-width: 400px;" onclick="event.stopPropagation()">
+        <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 id="confirmTitle" class="modal-title">Confirmation</h3>
                 <button class="modal-close" onclick="closeConfirmModal()">
@@ -684,7 +589,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                 </button>
             </div>
             <div class="modal-content">
-                <p id="confirmText" style="margin-bottom: 1.5rem; color: var(--text-muted);"></p>
+                <p id="confirmText"></p>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">Annuler</button>
                     <button type="button" id="confirmBtn" class="btn btn-primary">Confirmer</button>
@@ -695,9 +600,9 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
 
     <!-- Modal Approve Document -->
     <div id="approveModal" class="modal-overlay" style="display: none;" onclick="closeApproveModal(event)">
-        <div class="modal-container" style="max-width: 400px;" onclick="event.stopPropagation()">
+        <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h3 class="modal-title"><i class="fa-solid fa-check-circle" style="color: var(--success-color);"></i> Approuver le document</h3>
+                <h3 class="modal-title"><i class="fa-solid fa-check-circle"></i> Approuver le document</h3>
                 <button class="modal-close" onclick="closeApproveModal()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -706,8 +611,8 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                 <form method="POST" id="approveForm">
                     <?= csrfField() ?>
                     <input type="hidden" name="doc_id" id="approveDocId">
-                    <p style="margin-bottom: 1rem;">Document: <strong id="approveDocName"></strong></p>
-                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Le document sera approuvé et visible par tous les utilisateurs.</p>
+                    <p class="modal-doc-info">Document: <strong id="approveDocName"></strong></p>
+                    <p class="modal-doc-help">Le document sera approuvé et visible par tous les utilisateurs.</p>
                     <div class="modal-actions">
                         <button type="button" class="btn btn-secondary" onclick="closeApproveModal()">Annuler</button>
                         <button type="submit" name="approve_doc" class="btn btn-success">
@@ -722,7 +627,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
 
     <!-- Modal Reset Password -->
     <div id="resetModal" class="modal-overlay" style="display: none;" onclick="closeResetModal(event)">
-        <div class="modal-container" style="max-width: 400px;" onclick="event.stopPropagation()">
+        <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fa-solid fa-key"></i> Réinitialiser le mot de passe</h3>
                 <button class="modal-close" onclick="closeResetModal()">
@@ -733,16 +638,16 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                 <form method="POST" id="resetForm">
                     <?= csrfField() ?>
                     <input type="hidden" name="user_id" id="resetUserId">
-                    <p style="margin-bottom: 1rem;">Utilisateur: <strong id="resetUserLogin"></strong></p>
-                    <div class="form-group" style="margin-bottom: 1rem;">
+                    <p class="modal-doc-info">Utilisateur: <strong id="resetUserLogin"></strong></p>
+                    <div class="form-group">
                         <label class="form-label">Nouveau mot de passe</label>
                         <input type="password" name="new_password" class="form-control" placeholder="8 caractères min." required minlength="8">
                     </div>
-                    <div class="form-group" style="margin-bottom: 1rem;">
+                    <div class="form-group">
                         <label class="form-label">Confirmer</label>
                         <input type="password" name="confirm_password" class="form-control" placeholder="Répéter le mot de passe" required minlength="8">
                     </div>
-                    <button type="submit" name="reset_password" class="btn btn-primary" style="width: 100%;">
+                    <button type="submit" name="reset_password" class="btn btn-primary btn-block">
                         <i class="fa-solid fa-check"></i> Réinitialiser
                     </button>
                 </form>
@@ -752,7 +657,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
 
     <!-- Modal Reject Document -->
     <div id="rejectModal" class="modal-overlay" style="display: none;" onclick="closeRejectModal(event)">
-        <div class="modal-container" style="max-width: 450px;" onclick="event.stopPropagation()">
+        <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fa-solid fa-times-circle"></i> Rejeter le document</h3>
                 <button class="modal-close" onclick="closeRejectModal()">
@@ -765,7 +670,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                     <input type="hidden" name="doc_id" id="rejectDocId">
                     <div class="form-group">
                         <label class="form-label">Document</label>
-                        <p id="rejectDocName" class="form-value" style="font-weight: 500; color: var(--text-color);"></p>
+                        <p id="rejectDocName" class="form-value"></p>
                     </div>
                     <div class="form-group">
                         <label for="rejectReason" class="form-label">Raison du rejet</label>
@@ -782,19 +687,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
         </div>
     </div>
 
-    <style>
-        /* Ensure buttons in tables are clickable */
-        .data-table button,
-        .data-table form,
-        .action-buttons button {
-            pointer-events: auto !important;
-            position: relative;
-            z-index: 10;
-        }
-        .data-table td {
-            position: relative;
-        }
-    </style>
+
     <script src="<?= BASE_URL ?>js/modal.js"></script>
     <script>
         // Wrapper pour XModal avec fallback
@@ -912,24 +805,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                 document.getElementById('rejectModal').style.display = 'none';
             }
         }
-        // Theme toggle
-        (function() {
-            var btn = document.getElementById('dash-theme-toggle');
-            var html = document.documentElement;
-
-            function updateIcon() {
-                btn.innerHTML = html.getAttribute('data-theme') === 'dark' ?
-                    '<i class="fa-solid fa-sun"></i>' :
-                    '<i class="fa-solid fa-moon"></i>';
-            }
-            updateIcon();
-            btn.addEventListener('click', function() {
-                var t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                html.setAttribute('data-theme', t);
-                localStorage.setItem('theme', t);
-                updateIcon();
-            });
-        })();
     </script>
+    <script src="<?= BASE_URL ?>js/dashboard.js"></script>
 </body>
 </html>

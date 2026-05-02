@@ -44,6 +44,28 @@ The Replit sandbox has a seccomp restriction that blocks piping SQL to `--bootst
 - BASE_URL is always `/` in Replit (was `/mini/` for original local dev)
 - HTTPS redirect is skipped for Replit domains and localhost
 
+## CSS / JS Architecture
+All pages share a common set of external stylesheets and JS files — no inline styles or duplicated scripts:
+
+| File | Purpose |
+|---|---|
+| `css/style.css` | CSS variables, base reset |
+| `css/ui.css` | Global utility classes, alerts, badges |
+| `css/dashboard.css` | Dashboard layout, doc cards, review modal, utility helpers |
+| `css/admin.css` | Admin-specific: stats, tables, tabs, modal sizing |
+| `css/upload.css` | Upload page styles |
+| `css/review.css` | Review-request page styles |
+| `css/modal.css` | Generic modal overlay |
+| `js/dashboard.js` | Shared IIFE: theme-toggle + mobile sidebar (both pages) |
+| `js/modal.js` | Generic modal functions (XModal) |
+
+Key rules:
+- **No inline `<style>` blocks** in any PHP page
+- **No duplicated IIFEs** — theme toggle and mobile sidebar live only in `js/dashboard.js`
+- **No `error_log()` calls** in production paths
+- `BASE_URL` is always `/`; `openPreview()` must stay as an inline PHP `<script>` since it interpolates `BASE_URL`
+- `includes/sidebar.php` is included on both `dashboard.php` and `admin.php`
+
 ## Workflow
 Single workflow: **Start application**
 - Command: `bash /home/runner/workspace/start.sh`

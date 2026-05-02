@@ -18,26 +18,14 @@ function getDocTypes(): array
 
 function typeLabel(string $type): string
 {
-    $map = [
-        'cours'  => 'Cours',
-        'td'     => 'TD',
-        'tp'     => 'TP',
-        'examen' => 'Examen',
-        'resume' => 'Résumé',
-    ];
-    return $map[$type] ?? ucfirst($type);
+    $types = getDocTypes();
+    return $types[$type]['label'] ?? ucfirst($type);
 }
 
 function typeIcon(string $type): string
 {
-    $map = [
-        'cours'  => 'fa-book',
-        'td'     => 'fa-list-check',
-        'tp'     => 'fa-flask',
-        'examen' => 'fa-file-circle-question',
-        'resume' => 'fa-note-sticky',
-    ];
-    return $map[$type] ?? 'fa-file-lines';
+    $types = getDocTypes();
+    return $types[$type]['icon'] ?? 'fa-file-lines';
 }
 
 function typeClass(string $type): string

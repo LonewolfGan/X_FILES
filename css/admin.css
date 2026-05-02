@@ -1,0 +1,135 @@
+/* ============================================================ */
+/* ADMIN — XFILES                                               */
+/* ============================================================ */
+
+/* Container */
+.admin-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.admin-title { font-size: 1.75rem; font-weight: 700; }
+.admin-badge { background: var(--primary); color: var(--black); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+
+/* Stats Grid */
+.stats-grid { display: flex; flex-direction: row; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: nowrap; }
+.stat-card { background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); flex: 1; min-width: 0; }
+.stat-value { font-size: 2rem; font-weight: 700; color: var(--text-main); }
+.stat-label { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem; }
+.stat-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; background: var(--primary-transparent); color: var(--primary); }
+
+/* Admin Sections */
+.admin-section { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem; }
+.section-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.section-title { font-size: 1.125rem; font-weight: 600; }
+.section-content { padding: 1.5rem; }
+.section-content-scroll { overflow-x: auto; }
+
+/* Data Table */
+.data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.data-table th { text-align: left; padding: 0.75rem; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border-color); background: transparent; }
+.data-table td { padding: 0.75rem; border-bottom: 1px solid var(--border-color); font-size: 0.875rem; position: relative; }
+.data-table tbody tr { border-radius: var(--radius-md); transition: background 0.2s; }
+.data-table tbody tr:hover { background: var(--primary-transparent); }
+.data-table tbody tr:hover td:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+.data-table tbody tr:hover td:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* Ensure table buttons are always clickable */
+.data-table button,
+.data-table form,
+.action-buttons button { pointer-events: auto !important; position: relative; z-index: 10; }
+
+/* Empty State */
+.empty-state { text-align: center; padding: 3rem 1.5rem; color: var(--text-muted); }
+.empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; display: block; }
+.empty-state p { font-size: 1rem; }
+.empty-state .icon-success { color: var(--success-color, var(--primary)); opacity: 1; }
+
+/* Badges */
+.badge { display: inline-flex; padding: 0.25rem 0.5rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500; min-width: 60px; justify-content: center; }
+.badge-success { background: var(--primary-transparent); color: var(--primary); }
+.badge-warning { background: var(--secondary-transparent); color: var(--text-main); }
+.badge-danger { background: var(--primary-transparent); color: var(--black); }
+.badge-review { background: var(--primary-transparent); color: var(--text-main); }
+[data-theme="dark"] .badge-danger { background: var(--primary-transparent); }
+
+/* Buttons */
+.btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; border: none; cursor: pointer; border-radius: var(--radius-md); transition: all 0.2s; }
+.btn-success { background: var(--primary); color: var(--black); }
+.btn-success:hover { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-danger { background: var(--black); color: var(--primary); }
+.btn-danger:hover { background: var(--secondary-hover); transform: translateY(-1px); }
+.btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background: var(--bg-color); }
+.btn-full { width: 100%; }
+
+/* Action Buttons */
+.action-buttons { display: flex; gap: 0.5rem; align-items: center; }
+.action-buttons .btn-sm { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; }
+.action-btn-group { display: flex; gap: 0.5rem; align-items: center; }
+
+/* File links */
+.file-link { color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+.file-link:hover { text-decoration: underline; }
+.preview-btn { color: var(--primary); cursor: pointer; background: var(--primary-transparent); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; margin-left: 0.5rem; border: none; }
+.preview-btn:hover { background: var(--primary); color: var(--black); }
+
+/* Document & User info */
+.doc-title { font-weight: 500; color: var(--text-main); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-decoration: none; }
+.doc-title:hover { color: var(--primary); }
+.doc-meta { font-size: 0.75rem; color: var(--text-muted); }
+.user-info { display: flex; align-items: center; gap: 0.75rem; }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.user-name { font-weight: 500; }
+.user-email { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Tabs */
+.tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab { padding: 0.75rem 1rem; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+.tab.active { color: var(--text-main); border-bottom-color: var(--primary); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.review-count { color: var(--text-main); font-size: 0.75rem; margin-left: 0.25rem; }
+
+/* Form helpers */
+.form-inline { display: inline; }
+.form-value { font-weight: 500; color: var(--text-main); }
+
+/* Alert danger alias */
+.alert-danger { background: var(--secondary-transparent); border-color: var(--border-color); color: var(--text-main) !important; }
+.alert-danger i { color: var(--text-main) !important; }
+
+/* Modal size overrides */
+#messageModal .modal-container { max-width: 400px; text-align: center; }
+#confirmModal .modal-container,
+#approveModal .modal-container,
+#resetModal .modal-container { max-width: 400px; }
+#rejectModal .modal-container { max-width: 450px; }
+
+/* Modal content helpers */
+#messageIcon { font-size: 3rem; margin-bottom: 0.5rem; }
+#messageTitle { margin-bottom: 1rem; }
+#messageText { color: var(--text-muted); margin-bottom: 1.5rem; }
+#confirmText { margin-bottom: 1.5rem; color: var(--text-muted); }
+#rejectDocName { font-weight: 500; }
+#approveModal .modal-doc-info { margin-bottom: 1rem; }
+#approveModal .modal-doc-help { color: var(--text-muted); margin-bottom: 1.5rem; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .stats-grid { flex-wrap: wrap; }
+    .stat-card { flex: 1 1 calc(50% - 0.75rem); min-width: 200px; }
+}
+@media (max-width: 640px) {
+    .stat-card { flex: 1 1 100%; }
+    .data-table { font-size: 0.75rem; }
+    .data-table th, .data-table td { padding: 0.5rem; }
+}
+
+#messageModal .btn { min-width: 100px; }
+#approveModal .modal-title i { color: var(--success-color, var(--primary)); }
+.icon-success { color: var(--success-color, var(--primary)); opacity: 1; }
+.preview-btn-primary { background: var(--primary); color: var(--black); }
+#resetModal .modal-doc-info, #rejectModal .modal-doc-info { margin-bottom: 1rem; }
+#resetModal .form-group, #rejectModal .form-group { margin-bottom: 1rem; }
+.modal-doc-info { margin-bottom: 1rem; }
+.modal-doc-help { color: var(--text-muted); margin-bottom: 1.5rem; }
+.btn-block { width: 100%; }

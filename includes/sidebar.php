@@ -9,7 +9,7 @@ $sidebarTypes  = isset($_GET['types']) ? explode(',', $_GET['types']) : [];
 $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 ?>
 <aside class="dashboard-sidebar">
-    <a href="<?= BASE_URL ?>pages/login.php" class="sidebar-logo">
+    <a href="<?= BASE_URL ?>index.php" class="sidebar-logo">
         <i class="fa-solid fa-graduation-cap"></i>
         <span class="brand-text">XFILES</span>
     </a>
