@@ -95,9 +95,16 @@ try {
 
 // --- SESSION ---
 if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
-    ini_set('session.cookie_httponly', '1');
-    ini_set('session.cookie_samesite', 'Lax');
     ini_set('session.use_strict_mode', '1');
+
+    $isHttpsProxy = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+    session_set_cookie_params([
+        'httponly'  => true,
+        'samesite'  => $isHttpsProxy ? 'None' : 'Lax',
+        'secure'    => $isHttpsProxy,
+    ]);
     session_start();
 } elseif (session_status() === PHP_SESSION_NONE) {
     session_start();
