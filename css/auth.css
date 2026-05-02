@@ -138,13 +138,13 @@ body::after {
 
 /* Card */
 .auth-box {
-  background: #111111;
+  background: #151515;
   border-radius: 1.5rem;
   width: 100%;
   max-width: 460px;
   box-shadow:
     0 30px 60px -10px rgba(0, 0, 0, 0.8),
-    0 0 0 1px #2d2d2d;
+    0 0 0 1px #323232;
   overflow: visible;
   position: relative;
   z-index: 1;
@@ -152,8 +152,8 @@ body::after {
 
 /* Illustration strip */
 .auth-illustration-strip {
-  background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
-  border-bottom: 1px solid #2d2d2d;
+  background: linear-gradient(135deg, #1e1e1e, #111111);
+  border-bottom: 1px solid #323232;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,7 +180,7 @@ body::after {
 
 .auth-strip-text p {
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: #a09890;
   line-height: 1.5;
 }
 
@@ -206,7 +206,7 @@ body::after {
 }
 
 .auth-form-area .auth-subtitle {
-  color: #9ca3af;
+  color: #a09890;
   font-size: 0.9rem;
   margin-bottom: 2rem;
 }
@@ -220,14 +220,14 @@ body::after {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #9ca3af;
+  color: #a09890;
   margin-bottom: 0.5rem;
 }
 
 .auth-form-area .form-control {
-  background: #1a1a1a;
-  border: 1.5px solid #2d2d2d;
-  color: #ffffff;
+  background: #181818;
+  border: 1.5px solid #323232;
+  color: #f2ede8;
   border-radius: var(--radius-md);
   padding: 0.85rem 1rem;
   width: 100%;
@@ -242,22 +242,22 @@ body::after {
 }
 
 .auth-form-area .form-control::placeholder {
-  color: #555;
+  color: #5e5850;
 }
 
 select.form-control option {
-  background: #1a1a1a;
+  background: #181818;
 }
 
 /* Override nice-select dropdown to match auth card */
 .auth-form-area .nice-select .list {
-  background: #1a1a1a;
-  border-color: #2d2d2d;
+  background: #181818;
+  border-color: #323232;
 }
 .auth-form-area .nice-select .option:hover,
 .auth-form-area .nice-select .option.focus,
 .auth-form-area .nice-select .option.selected.focus {
-  background-color: #2d2d2d;
+  background-color: #2a2a2a;
   color: var(--primary);
 }
 
@@ -274,7 +274,7 @@ select.form-control option {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: #9ca3af;
+  color: #a09890;
   cursor: pointer;
 }
 
@@ -293,7 +293,7 @@ select.form-control option {
   align-items: center;
   gap: 1rem;
   margin: 1.2rem 0;
-  color: #555;
+  color: #6b6560;
   font-size: 0.85rem;
 }
 
@@ -302,7 +302,7 @@ select.form-control option {
   content: "";
   flex: 1;
   height: 1px;
-  background: #2d2d2d;
+  background: #323232;
 }
 
 
@@ -331,7 +331,7 @@ select.form-control option {
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: #a09890;
 }
 
 .auth-footer-text a {
