@@ -225,5 +225,5 @@ INSERT IGNORE INTO modules (name, code, filiere_code, semester) VALUES
 ('Langues Etrangères 5', 'IL-S5-06', 'IL', 'S5'),
 ('Management 3 et Stage', 'IL-S5-07', 'IL', 'S5');
 
-INSERT IGNORE INTO users (name, login, password_hash, filiere_code, role) VALUES
-('Admin ENSIAS', 'ENSIASD', '$2y$10$f8pmbt0UzTiUFVl6Pq4mhuO4brhsaStn/G.sfiTG2faxh56MKRWkK', 'SDBDIA', 'admin');
+INSERT IGNORE INTO users (name, login, password_hash, role) VALUES
+('Admin ENSIAS', 'ENSIASD', '$2y$10$f8pmbt0UzTiUFVl6Pq4mhuO4brhsaStn/G.sfiTG2faxh56MKRWkK', 'admin');

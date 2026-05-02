@@ -105,15 +105,26 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  color: var(--black);
+  color: #dc2626;
   font-size: 0.85rem;
   margin-top: 0.5rem;
   animation: pop-in 0.2s ease-out forwards;
 }
 
+[data-theme="dark"] .field-error-message {
+  color: #f87171;
+}
+
 input[aria-invalid="true"],
 select[aria-invalid="true"],
 .nice-select[aria-invalid="true"] {
-  border-color: var(--black) !important;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+}
+
+[data-theme="dark"] input[aria-invalid="true"],
+[data-theme="dark"] select[aria-invalid="true"],
+[data-theme="dark"] .nice-select[aria-invalid="true"] {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2) !important;
 }

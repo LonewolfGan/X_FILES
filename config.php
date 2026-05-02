@@ -96,7 +96,7 @@ try {
 // --- SESSION ---
 if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     ini_set('session.cookie_httponly', '1');
-    ini_set('session.cookie_samesite', 'Strict');
+    ini_set('session.cookie_samesite', 'Lax');
     ini_set('session.use_strict_mode', '1');
     session_start();
 } elseif (session_status() === PHP_SESSION_NONE) {
