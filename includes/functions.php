@@ -80,6 +80,30 @@ function toggleValueUrl(array $current, string $value, string $key, array $urlPa
     return buildUrl($params);
 }
 
+// --- SIDEBAR COUNTS ---
+
+/**
+ * Retourne le nombre de documents approuvés par type pour la sidebar
+ */
+function getSidebarTypeCounts(PDO $pdo): array
+{
+    try {
+        $stmt = $pdo->query(
+            "SELECT type, COUNT(*) AS cnt
+             FROM documents
+             WHERE status = 'approved'
+             GROUP BY type"
+        );
+        $counts = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $counts[$row['type']] = (int)$row['cnt'];
+        }
+        return $counts;
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
 // --- VALIDATION ---
 
 /**

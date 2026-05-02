@@ -150,6 +150,36 @@ body.dashboard-mode .site-footer {
   font-weight: 600;
 }
 
+/* Per-type document count badge in the sidebar */
+.nav-count {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--primary-transparent);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  text-align: center;
+  line-height: 1.5;
+  flex-shrink: 0;
+  white-space: nowrap;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-width 0.22s ease, opacity 0.15s ease 0.06s, padding 0.1s ease;
+}
+
+.dashboard-sidebar:hover .nav-count {
+  max-width: 3rem;
+  opacity: 1;
+  padding: 0.125rem 0.45rem;
+}
+
+.nav-item.active .nav-count {
+  background: var(--primary);
+  color: var(--black);
+}
+
 .sidebar-footer {
   padding: 0.75rem 0.625rem;
   border-top: 1px solid var(--border-color);

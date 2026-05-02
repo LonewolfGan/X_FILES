@@ -7,6 +7,8 @@ $sidebarView   = $_GET['view'] ?? '';
 $sidebarTypes  = isset($_GET['types']) ? explode(',', $_GET['types']) : [];
 
 $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+$_sc = (isset($pdo) && $pdo instanceof PDO) ? getSidebarTypeCounts($pdo) : [];
 ?>
 <aside class="dashboard-sidebar">
     <a href="<?= BASE_URL ?>index.php" class="sidebar-logo">
@@ -36,22 +38,27 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         <a href="<?= BASE_URL ?>pages/dashboard.php?types=cours" class="nav-item <?= (in_array('cours', $sidebarTypes)) ? 'active' : '' ?>">
             <i class="fa-solid fa-book"></i>
             <span>Cours</span>
+            <?php if (!empty($_sc['cours'])): ?><em class="nav-count"><?= $_sc['cours'] ?></em><?php endif; ?>
         </a>
         <a href="<?= BASE_URL ?>pages/dashboard.php?types=td" class="nav-item <?= (in_array('td', $sidebarTypes)) ? 'active' : '' ?>">
             <i class="fa-solid fa-list-check"></i>
             <span>Travaux Dirigés</span>
+            <?php if (!empty($_sc['td'])): ?><em class="nav-count"><?= $_sc['td'] ?></em><?php endif; ?>
         </a>
         <a href="<?= BASE_URL ?>pages/dashboard.php?types=tp" class="nav-item <?= (in_array('tp', $sidebarTypes)) ? 'active' : '' ?>">
             <i class="fa-solid fa-flask"></i>
             <span>Travaux Pratiques</span>
+            <?php if (!empty($_sc['tp'])): ?><em class="nav-count"><?= $_sc['tp'] ?></em><?php endif; ?>
         </a>
         <a href="<?= BASE_URL ?>pages/dashboard.php?types=examen" class="nav-item <?= (in_array('examen', $sidebarTypes)) ? 'active' : '' ?>">
             <i class="fa-solid fa-file-circle-question"></i>
             <span>Examens</span>
+            <?php if (!empty($_sc['examen'])): ?><em class="nav-count"><?= $_sc['examen'] ?></em><?php endif; ?>
         </a>
         <a href="<?= BASE_URL ?>pages/dashboard.php?types=resume" class="nav-item <?= (in_array('resume', $sidebarTypes)) ? 'active' : '' ?>">
             <i class="fa-solid fa-note-sticky"></i>
             <span>Résumés</span>
+            <?php if (!empty($_sc['resume'])): ?><em class="nav-count"><?= $_sc['resume'] ?></em><?php endif; ?>
         </a>
     </nav>
 
