@@ -113,6 +113,43 @@
 #approveModal .modal-doc-info { margin-bottom: 1rem; }
 #approveModal .modal-doc-help { color: var(--text-muted); margin-bottom: 1.5rem; }
 
+/* Admin Search Bar */
+.admin-search-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+.admin-search-wrapper > i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  pointer-events: none;
+}
+.admin-search {
+  background: var(--bg-color);
+  border: 1.5px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: var(--radius-full);
+  padding: 0.42rem 1rem 0.42rem 2.1rem;
+  font-size: 0.85rem;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.admin-search:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-transparent);
+}
+.admin-search::placeholder { color: var(--text-muted); }
+.no-results-row td {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 2rem;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .stats-grid { flex-wrap: wrap; }

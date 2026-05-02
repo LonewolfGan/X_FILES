@@ -413,6 +413,12 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                     <div class="admin-section">
                         <div class="section-header">
                             <h2 class="section-title">Tous les documents</h2>
+                            <div class="admin-search-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="search" id="docsSearch" class="admin-search"
+                                       placeholder="Titre, auteur, type…"
+                                       oninput="filterTable('docsSearch','docsTbody')">
+                            </div>
                             <span class="badge"><?= count($docs) ?> total</span>
                         </div>
                         <?php if (empty($docs)): ?>
@@ -433,7 +439,8 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="docsTbody">
+                                    <tr class="no-results-row" id="docsTbodyEmpty" style="display:none"><td colspan="6"><i class="fa-solid fa-magnifying-glass"></i> Aucun résultat pour cette recherche.</td></tr>
                                     <?php foreach ($docs as $doc): ?>
                                         <tr>
                                             <td>
@@ -482,6 +489,12 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                     <div class="admin-section">
                         <div class="section-header">
                             <h2 class="section-title">Tous les utilisateurs</h2>
+                            <div class="admin-search-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="search" id="usersSearch" class="admin-search"
+                                       placeholder="Nom, login, filière…"
+                                       oninput="filterTable('usersSearch','usersTbody')">
+                            </div>
                             <span class="badge"><?= count($users) ?> total</span>
                         </div>
                         <?php if (empty($users)): ?>
@@ -503,7 +516,8 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="usersTbody">
+                                    <tr class="no-results-row" id="usersTbodyEmpty" style="display:none"><td colspan="7"><i class="fa-solid fa-magnifying-glass"></i> Aucun résultat pour cette recherche.</td></tr>
                                     <?php foreach ($users as $user): ?>
                                         <tr>
                                             <td>
@@ -804,6 +818,20 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             if (!event || event.target.id === 'rejectModal') {
                 document.getElementById('rejectModal').style.display = 'none';
             }
+        }
+
+        function filterTable(inputId, tbodyId) {
+            const q = document.getElementById(inputId).value.toLowerCase().trim();
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            const noRes = document.getElementById(tbodyId + 'Empty');
+            let visible = 0;
+            tbody.querySelectorAll('tr:not(.no-results-row)').forEach(function(row) {
+                const match = !q || row.textContent.toLowerCase().includes(q);
+                row.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            if (noRes) noRes.style.display = (visible === 0 && q) ? '' : 'none';
         }
     </script>
     <script src="<?= BASE_URL ?>js/dashboard.js"></script>
