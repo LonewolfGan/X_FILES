@@ -1,8 +1,8 @@
 # Enable URL rewriting
 RewriteEngine On
 
-# Set base for subfolder
-RewriteBase /mini/
+# Set base for root
+RewriteBase /
 
 # Redirect to index.php if file/directory doesn't exist
 RewriteCond %{REQUEST_FILENAME} !-f

@@ -18,34 +18,42 @@ if (getenv('DB_HOST') !== false) {
     define('DB_USER', getenv('DB_USER'));
     define('DB_PASS', getenv('DB_PASSWORD'));
     define('BASE_URL', '/');
-} elseif ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1') {
-    // Local
-    define('DB_HOST', '127.0.0.1:3307');
+} elseif ((isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] === 'localhost') || (isset($_SERVER['SERVER_ADDR']) && in_array($_SERVER['SERVER_ADDR'], ['127.0.0.1', '::1'], true))) {
+    // Local / Replit
+    define('DB_HOST', '127.0.0.1:3306');
     define('DB_NAME', 'xfiles');
     define('DB_USER', 'root');
     define('DB_PASS', '');
-    define('BASE_URL', '/mini/');
+    define('BASE_URL', '/');
 } elseif (file_exists(__DIR__ . '/config.infinityfree.php')) {
     // InfinityFree
     require_once __DIR__ . '/config.infinityfree.php';
 } else {
-    // Fallback local
-    define('DB_HOST', '127.0.0.1:3307');
+    // Fallback (Replit / any host)
+    define('DB_HOST', '127.0.0.1:3306');
     define('DB_NAME', 'xfiles');
     define('DB_USER', 'root');
     define('DB_PASS', '');
-    define('BASE_URL', '/mini/');
+    define('BASE_URL', '/');
 }
 
 // --- HTTPS EN PRODUCTION ---
 if (php_sapi_name() !== 'cli' && !headers_sent()) {
-    $isLocal = isset($_SERVER['SERVER_NAME']) && in_array($_SERVER['SERVER_NAME'], ['localhost', '127.0.0.1', '::1'], true);
+    $host = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
+    $hostNoPort = strtolower(explode(':', $host)[0]);
+    $serverAddr = $_SERVER['SERVER_ADDR'] ?? '';
+    $isLocal = in_array($hostNoPort, ['localhost', '127.0.0.1', '::1'], true)
+        || str_contains($hostNoPort, '.replit.dev')
+        || str_contains($hostNoPort, '.repl.co')
+        || str_contains($hostNoPort, '.replit.app')
+        || str_contains($hostNoPort, '.kirk.replit.dev')
+        || in_array($serverAddr, ['127.0.0.1', '::1'], true);
     $httpsOn = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (isset($_SERVER['SERVER_PORT']) && (string)$_SERVER['SERVER_PORT'] === '443')
         || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
 
-    if (!$isLocal && !$httpsOn && isset($_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'])) {
-        header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], true, 301);
+    if (!$isLocal && !$httpsOn && $host !== '' && isset($_SERVER['REQUEST_URI'])) {
+        header('Location: https://' . $host . $_SERVER['REQUEST_URI'], true, 301);
         exit;
     }
 }
@@ -86,10 +94,12 @@ try {
 }
 
 // --- SESSION ---
-if (session_status() === PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_samesite', 'Strict');
     ini_set('session.use_strict_mode', '1');
+    session_start();
+} elseif (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
