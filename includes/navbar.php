@@ -6,8 +6,8 @@
 <header>
   <div class="container">
     <nav class="navbar">
-      <a href="<?= BASE_URL ?>index.php" class="brand">
-        <i class="fa-solid fa-graduation-cap"></i> XFILES
+      <a href="<?= BASE_URL ?>index.php" class="brand" aria-label="XFILES — Accueil">
+        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> XFILES
       </a>
 
       <div class="nav-menu" id="nav-menu">
@@ -17,8 +17,8 @@
           <a href="<?= BASE_URL ?>index.php#testimonials">À propos</a>
         </div>
         <div class="nav-actions">
-          <button id="theme-toggle" class="btn btn-ghost">
-            <i class="fa-solid fa-moon"></i> Mode sombre
+          <button id="theme-toggle" class="btn btn-ghost" aria-label="Basculer le thème sombre/clair">
+            <i class="fa-solid fa-moon" aria-hidden="true"></i> Mode sombre
           </button>
           <?php if (isLoggedIn()): ?>
             <a href="<?= BASE_URL ?>pages/dashboard.php" class="btn btn-primary">Go To Dashboard</a>
@@ -28,8 +28,8 @@
         </div>
       </div>
 
-      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Menu">
-        <i class="fa-solid fa-bars"></i>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Ouvrir le menu de navigation" aria-expanded="false" aria-controls="nav-menu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
       </button>
     </nav>
   </div>

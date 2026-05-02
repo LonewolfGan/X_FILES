@@ -8,7 +8,8 @@ require_once __DIR__ . '/includes/functions.php';
 
 $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PDO::FETCH_ASSOC);
 
-$pageTitle = 'XFILES - L\'Intelligence Collective';
+$pageTitle       = 'XFILES — Partage de Ressources Académiques Gratuit';
+$pageDescription = 'XFILES est la plateforme gratuite de partage de ressources académiques pour étudiants. Accédez à des cours, TD, TP, annales d\'examens et synthèses dans toutes les filières.';
 $pageCss = [
     BASE_URL . 'css/index.css',
     BASE_URL . 'css/buttons.css',
@@ -20,6 +21,23 @@ $pageCss = [
 include __DIR__ . '/includes/header.php';
 ?>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "XFILES",
+    "description": "Plateforme gratuite de partage de ressources académiques pour étudiants : cours, TD, TP et annales d'examens.",
+    "url": "https://<?= htmlspecialchars($_SERVER['HTTP_HOST'] ?? 'xfiles.replit.app') ?>",
+    "logo": "https://<?= htmlspecialchars($_SERVER['HTTP_HOST'] ?? 'xfiles.replit.app') ?>/images/Team-pana.png",
+    "sameAs": [],
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR",
+      "description": "Accès gratuit à des milliers de ressources académiques"
+    }
+  }
+  </script>
   <script src="<?= BASE_URL ?>js/index.js?v=1.0.0" defer></script>
 
   <?php include __DIR__ . '/includes/navbar.php'; ?>
@@ -43,21 +61,21 @@ include __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="hero-visual">
-          <img src="<?= BASE_URL ?>images/Team-pana.png" alt="Illustration collaborative" class="hero-image-animate" />
+          <img src="<?= BASE_URL ?>images/Team-pana.png" alt="Étudiants collaborant sur XFILES" class="hero-image-animate" width="560" height="420" fetchpriority="high" />
         </div>
       </div>
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <section id="ressources" class="container section-ressources">
       <h2 class="section-title">Nos Ressources Académiques</h2>
       <div class="ressources-grid">
         <?php foreach ($filieres as $f): ?>
           <div class="card ressource-card">
-            <div class="ressource-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="ressource-icon"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></div>
             <h3 class="ressource-title"><?= htmlspecialchars($f['name']) ?></h3>
-            <a href="<?= BASE_URL ?>pages/dashboard.php?filiere=<?= htmlspecialchars($f['code']) ?>" class="btn btn-outline">Explorer <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="<?= BASE_URL ?>pages/dashboard.php?filiere=<?= htmlspecialchars($f['code']) ?>" class="btn btn-outline">Explorer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
           </div>
         <?php endforeach; ?>
       </div>
@@ -77,11 +95,11 @@ include __DIR__ . '/includes/header.php';
         ?>
           <div class="card testimonial-card">
             <div class="testimonial-content">
-              <i class="fa-solid fa-quote-left quote-icon"></i>
+              <i class="fa-solid fa-quote-left quote-icon" aria-hidden="true"></i>
               <p>"<?= htmlspecialchars($t['text']) ?>"</p>
             </div>
             <div class="testimonial-author">
-              <img src="https://ui-avatars.com/api/?name=<?= $initials ?>&background=fbbf24&color=000" alt="<?= htmlspecialchars($t['name']) ?>" class="author-avatar">
+              <img src="https://ui-avatars.com/api/?name=<?= $initials ?>&background=fbbf24&color=000" alt="Photo de profil de <?= htmlspecialchars($t['name']) ?>" class="author-avatar" width="48" height="48" loading="lazy">
               <div class="author-info">
                 <h4><?= htmlspecialchars($t['name']) ?></h4>
                 <span><?= htmlspecialchars($t['role']) ?></span>
@@ -97,17 +115,17 @@ include __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="<?= BASE_URL ?>pages/login.php" class="brand">
-            <i class="fa-solid fa-graduation-cap"></i> XFILES
+          <a href="<?= BASE_URL ?>pages/login.php" class="brand" aria-label="XFILES — Accueil">
+            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> XFILES
           </a>
           <p class="footer-desc">
             Partagez, découvrez et améliorez des ressources académiques au sein d'une communauté d'étudiants.
           </p>
           <div class="social-links">
-            <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
-            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-            <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
+            <a href="#" aria-label="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
           </div>
         </div>
 

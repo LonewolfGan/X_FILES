@@ -160,7 +160,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_doc'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload - XFILES</title>
+    <title>Partager une ressource — XFILES</title>
+    <meta name="description" content="Partagez vos ressources académiques avec la communauté XFILES : cours, TD, TP, annales d'examens et synthèses. Aidez d'autres étudiants à réussir." />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#fbbf24" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <script>
         (function() {
             var s = localStorage.getItem('theme');
@@ -168,13 +174,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_doc'])) {
             document.documentElement.setAttribute('data-theme', s || sys);
         })();
     </script>
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css?v=1.0.0">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/dashboard.css?v=1.0.0">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/buttons.css?v=1.0.0">
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css?v=1.1.0">
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/dashboard.css?v=1.1.0">
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/buttons.css?v=1.1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/ui.css?v=1.0.0">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/responsive.css?v=1.0.0">
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/ui.css?v=1.1.0">
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/responsive.css?v=1.1.0">
     <style>
         .upload-container {
             max-width: 700px;

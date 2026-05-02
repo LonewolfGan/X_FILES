@@ -34,7 +34,9 @@ $stmt = $pdo->prepare('SELECT * FROM filieres ORDER BY name ASC');
 $stmt->execute();
 $filieres = $stmt->fetchAll();
 
-$pageTitle = 'Créer un compte – XFILES';
+$pageTitle       = 'Créer un compte gratuit – XFILES';
+$pageDescription = 'Crée ton compte XFILES gratuitement en 30 secondes. Accède à des milliers de ressources académiques et partage tes propres cours et annales avec la communauté.';
+$pageRobots      = 'index, follow';
 $pageCss = [
     BASE_URL . 'css/auth.css',
     BASE_URL . 'css/forms.css',

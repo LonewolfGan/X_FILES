@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /index.php
+Allow: /pages/dashboard.php
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+Disallow: /pages/admin.php
+Disallow: /pages/upload.php
+Disallow: /pages/download.php
+Disallow: /pages/view.php
+Disallow: /pages/logout.php
+Disallow: /includes/
+Disallow: /config.php
+Disallow: /router.php
+Disallow: /start.sh
+Disallow: /start-mysql.sh
+Disallow: /projet.sql
+
+Sitemap: https://xfiles.replit.app/sitemap.xml

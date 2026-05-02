@@ -32,7 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Connexion – XFILES';
+$pageTitle       = 'Connexion – XFILES';
+$pageDescription = 'Connecte-toi à ton compte XFILES pour accéder à tes ressources académiques : cours, TD, TP, annales et synthèses partagés par la communauté.';
+$pageRobots      = 'noindex, follow';
 $pageCss = [
     BASE_URL . 'css/auth.css',
     BASE_URL . 'css/forms.css',
