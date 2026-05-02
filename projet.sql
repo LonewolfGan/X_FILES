@@ -3,7 +3,6 @@
 -- ============================================
 -- VIDER ET RECÉER LES TABLES (BASE PROPRE)
 -- ============================================
-DROP TABLE IF EXISTS commentaires;
 DROP TABLE IF EXISTS documents;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS modules;
@@ -54,18 +53,6 @@ CREATE TABLE IF NOT EXISTS documents (
   FOREIGN KEY (module_id) REFERENCES modules(id),
   FOREIGN KEY (user_id)   REFERENCES users(id) ON DELETE SET NULL
 );
-
-CREATE TABLE IF NOT EXISTS commentaires (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT,
-  content TEXT NOT NULL,
-  user_id BIGINT,
-  doc_id BIGINT,
-  rating TINYINT DEFAULT 5 CHECK (rating >= 1 AND rating <= 5),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (doc_id) REFERENCES documents(id)
-);
-
 
 INSERT IGNORE INTO filieres (code, name) VALUES
 ('SDBDIA', 'Sciences des Données, Big Data & IA'),
