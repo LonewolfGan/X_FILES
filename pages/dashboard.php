@@ -786,7 +786,7 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         <?php endif; ?>
                     </section>
 
-                    <aside class="dashboard-filters">
+                    <aside class="dashboard-filters collapsed">
                         <h3>Filtres</h3>
 
                         <div class="filter-section">

@@ -231,7 +231,10 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                     <h1 class="header-title">Administration</h1>
                 </div>
                 <div class="header-actions">
-                    
+                    <a href="<?= BASE_URL ?>pages/upload.php" class="btn btn-primary btn-header">
+                        <i class="fa-solid fa-upload"></i>
+                        <span class="upload-btn-text">Publier</span>
+                    </a>
                     <a href="<?= BASE_URL ?>index.php" class="btn btn-icon">
                         <i class="fa-solid fa-house"></i>
                     </a>

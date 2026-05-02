@@ -134,7 +134,7 @@
   border-radius: var(--radius-full);
   padding: 0.42rem 1rem 0.42rem 2.1rem;
   font-size: 0.85rem;
-  width: 220px;
+  width: clamp(180px, 30vw, 340px);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
