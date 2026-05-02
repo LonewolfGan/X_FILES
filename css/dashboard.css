@@ -32,7 +32,7 @@ body.dashboard-mode .site-footer {
 /* ============================================================ */
 .dashboard-sidebar {
   width: var(--sidebar-width);
-  background: var(--bg-card);
+  background: var(--bg-color);
   border-right: none;
   border-radius: 0;
   position: fixed;
