@@ -10,4 +10,6 @@
 .card:hover {
   box-shadow: var(--shadow-hover);
   transform: translateY(-5px);
+  position: relative;
+  z-index: 2;
 }
