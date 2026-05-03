@@ -224,7 +224,7 @@
 .ressource-card:hover .ressource-icon {
   background-color: var(--primary);
   color: var(--black);
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.02);
 }
 
 .ressource-card h3 {
