@@ -104,7 +104,7 @@ include __DIR__ . '/includes/header.php';
     </section>
 
     <!-- ══ FILIÈRES ════════════════════════════════════════════════════ -->
-    <section id="ressources" class="container section-ressources">
+    <section id="ressources" class="section-ressources section-ressources-wide">
       <div class="section-heading">
         <h2 class="section-title">Explorez par filière</h2>
         <p class="section-subtitle">Des ressources organisées par filière pour retrouver exactement ce qu'il vous faut.</p>
