@@ -496,6 +496,9 @@
 }
 .cta-card .btn-primary:hover {
   background: #111;
+  color: var(--primary);
+  transform: none;
+  box-shadow: none;
 }
 .cta-card .btn-secondary {
   background: rgba(0,0,0,0.12);
@@ -504,6 +507,9 @@
 }
 .cta-card .btn-secondary:hover {
   background: rgba(0,0,0,0.22);
+  color: var(--black);
+  transform: none;
+  box-shadow: none;
 }
 
 /* ── Statistiques (ancienne version, conservée) ─────── */
