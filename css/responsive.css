@@ -407,8 +407,8 @@
   .data-table th,
   .data-table td {
     white-space: nowrap;
-    padding: 0.75rem;
-    font-size: 0.875rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.82rem;
   }
 }
 

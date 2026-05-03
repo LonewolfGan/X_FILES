@@ -306,35 +306,42 @@
   overflow-x: auto;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
+  overflow: hidden;
 }
 
+/* ── Data Table — Refined ───────────────────────────────────────── */
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
-
-.data-table th,
+.data-table thead { background: var(--bg-card); }
+.data-table th {
+  padding: 0.8rem 1.1rem;
+  text-align: left;
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+  border-bottom: 1.5px solid var(--border-color);
+  white-space: nowrap;
+  user-select: none;
+}
 .data-table td {
-  padding: 1rem;
+  padding: 0.9rem 1.1rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  vertical-align: middle;
 }
-
-.data-table th {
-  font-weight: 600;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  background: var(--bg-card);
-}
-
-.data-table tr:last-child td {
-  border-bottom: none;
-}
-
-/* Hover removed - using primary-transparent from dashboard.css instead */
+.data-table tbody tr { transition: background 0.15s; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.018); }
+[data-theme="dark"] .data-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.025); }
+.data-table tbody tr:hover { background: var(--primary-transparent) !important; }
+.data-table tbody tr:hover td:first-child { box-shadow: inset 3px 0 0 var(--primary); }
+/* ─────────────────────────────────────────────────────────────── */
 
 /* ========================================== */
 /* DIVIDERS                                     */

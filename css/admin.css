@@ -16,21 +16,45 @@
 .stat-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; background: var(--primary-transparent); color: var(--primary); }
 
 /* Admin Sections */
-.admin-section { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem; }
-.section-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-.section-title { font-size: 1.125rem; font-weight: 600; }
+.admin-section { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem; overflow: hidden; }
+.section-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.section-title { font-size: 1rem; font-weight: 600; }
 .section-content { padding: 1.5rem; }
-.section-content-scroll { overflow-x: auto; }
+.section-content-scroll { overflow-x: auto; padding: 0; }
 
-/* Data Table */
-.data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-.data-table th { text-align: left; padding: 0.75rem; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border-color); background: transparent; }
-.data-table td { padding: 0.75rem; border-bottom: 1px solid var(--border-color); font-size: 0.875rem; position: relative; }
-.data-table tbody tr { border-radius: var(--radius-md); transition: background 0.2s; }
-.data-table tbody tr:hover { background: var(--primary-transparent); }
-.data-table tbody tr:hover td:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
-.data-table tbody tr:hover td:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+/* ── Data Table — Refined ───────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.data-table thead { background: var(--bg-card); }
+.data-table th {
+  padding: 0.8rem 1.1rem;
+  text-align: left;
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+  border-bottom: 1.5px solid var(--border-color);
+  white-space: nowrap;
+  user-select: none;
+}
+.data-table td {
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  vertical-align: middle;
+  position: relative;
+}
+.data-table tbody tr { transition: background 0.15s; }
 .data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.018); }
+[data-theme="dark"] .data-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.025); }
+.data-table tbody tr:hover { background: var(--primary-transparent) !important; }
+.data-table tbody tr:hover td:first-child { box-shadow: inset 3px 0 0 var(--primary); }
+/* ─────────────────────────────────────────────────────────────── */
 
 /* Ensure table buttons are always clickable */
 .data-table button,
@@ -188,8 +212,9 @@
 }
 @media (max-width: 640px) {
     .stat-card { flex: 1 1 100%; }
-    .data-table { font-size: 0.75rem; }
-    .data-table th, .data-table td { padding: 0.5rem; }
+    .data-table { font-size: 0.78rem; }
+    .data-table th { padding: 0.6rem 0.75rem; }
+    .data-table td { padding: 0.65rem 0.75rem; }
 }
 
 #messageModal .btn { min-width: 100px; }
