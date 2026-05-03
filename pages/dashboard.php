@@ -56,8 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_own_doc'])) {
                 }
 
                 $pdo->commit();
-                $redirectView = (($_POST['redirect_view'] ?? '') === 'settings') ? 'settings' : 'my-docs';
-                header('Location: ' . BASE_URL . 'pages/dashboard.php?view=' . $redirectView . '&deleted=1');
+                header('Location: ' . BASE_URL . 'pages/dashboard.php?view=my-docs&deleted=1');
                 exit;
             } catch (Throwable $e) {
                 if ($pdo->inTransaction()) {
@@ -241,9 +240,9 @@ $filieres = $pdo->query('SELECT * FROM filieres ORDER BY name ASC')->fetchAll(PD
 
 $types = getDocTypes();
 
-// Fetch user's documents for "Mes documents" view and Settings
+// Fetch user's documents for "Mes documents" view
 $userDocs = [];
-if (in_array($sidebarView, ['my-docs', 'settings'])) {
+if ($sidebarView === 'my-docs') {
     $stmt = $pdo->prepare("
         SELECT d.*, m.name as module_name, m.code as module_code, f.name as filiere_name
         FROM documents d
@@ -469,13 +468,6 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($review_success): ?>
-                        <div class="alert alert-success">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <?= htmlspecialchars($review_success) ?>
-                        </div>
-                    <?php endif; ?>
-
                     <?php if (!empty($update_errors)): ?>
                         <div class="alert alert-danger">
                             <i class="fa-solid fa-circle-exclamation"></i>
@@ -487,7 +479,6 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         </div>
                     <?php endif; ?>
 
-                    <div class="settings-section-label">Profil</div>
                     <div class="settings-card card-premium">
                         <form action="<?= BASE_URL ?>pages/dashboard.php?view=settings" method="post" enctype="multipart/form-data" class="settings-form">
                             <?= csrfField() ?>
@@ -564,88 +555,6 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                 </button>
                             </div>
                         </form>
-                    </div>
-
-                    <!-- Mes documents -->
-                    <div class="settings-section-label">Mes documents</div>
-                    <div class="settings-card settings-my-docs-card">
-                        <div class="settings-my-docs-header">
-                            <div>
-                                <span class="settings-my-docs-count"><?= count($userDocs) ?> document<?= count($userDocs) !== 1 ? 's' : '' ?></span>
-                            </div>
-                            <a href="<?= BASE_URL ?>pages/upload.php" class="btn btn-primary btn-sm">
-                                <i class="fa-solid fa-plus"></i> Publier un document
-                            </a>
-                        </div>
-                        <?php if (empty($userDocs)): ?>
-                            <div class="empty-state settings-my-docs-empty">
-                                <i class="fa-solid fa-folder-open"></i>
-                                <p>Vous n'avez pas encore publié de documents.</p>
-                            </div>
-                        <?php else: ?>
-                            <div class="section-content-scroll">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Titre</th>
-                                            <th>Type</th>
-                                            <th>Module</th>
-                                            <th>Statut</th>
-                                            <th>Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($userDocs as $doc): ?>
-                                            <tr>
-                                                <td>
-                                                    <a href="<?= BASE_URL ?>pages/view.php?id=<?= (int)$doc['id'] ?>" target="_blank" class="settings-doc-title">
-                                                        <?= htmlspecialchars($doc['title']) ?>
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <span class="type-tag <?= typeClass($doc['type']) ?>">
-                                                        <i class="fa-solid <?= typeIcon($doc['type']) ?>"></i>
-                                                        <?= htmlspecialchars(typeLabel($doc['type'])) ?>
-                                                    </span>
-                                                </td>
-                                                <td class="doc-meta"><?= htmlspecialchars($doc['module_name'] ?? '—') ?></td>
-                                                <td>
-                                                    <?php if ($doc['status'] === 'approuve'): ?>
-                                                        <span class="status-pill status-pill-green"><i class="fa-solid fa-check-circle"></i> Approuvé</span>
-                                                    <?php elseif ($doc['status'] === 'en_attente'): ?>
-                                                        <span class="status-pill status-pill-yellow"><i class="fa-solid fa-hourglass-half"></i> En attente</span>
-                                                    <?php else: ?>
-                                                        <span class="status-pill status-pill-red"><i class="fa-solid fa-ban"></i> Rejeté</span>
-                                                        <?php if (!empty($doc['rejection_reason'])): ?>
-                                                            <div class="doc-meta" style="margin-top:0.2rem"><?= htmlspecialchars($doc['rejection_reason']) ?></div>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td class="doc-meta"><?= date('d/m/Y', strtotime($doc['created_at'])) ?></td>
-                                                <td>
-                                                    <div class="action-btn-group">
-                                                        <a href="<?= BASE_URL ?>pages/download.php?id=<?= (int)$doc['id'] ?>" class="btn btn-sm btn-icon" title="Télécharger">
-                                                            <i class="fa-solid fa-download"></i>
-                                                        </a>
-                                                        <form method="POST" action="<?= BASE_URL ?>pages/dashboard.php?view=settings" class="form-inline">
-                                                            <?= csrfField() ?>
-                                                            <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
-                                                            <input type="hidden" name="delete_own_doc" value="1">
-                                                            <input type="hidden" name="redirect_view" value="settings">
-                                                            <button type="submit" class="btn btn-sm btn-icon btn-danger-ghost" title="Supprimer"
-                                                                    onclick="return confirm('Supprimer ce document définitivement ?')">
-                                                                <i class="fa-solid fa-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
 

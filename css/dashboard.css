@@ -372,7 +372,7 @@ body.dashboard-mode .site-footer {
 /* SETTINGS — isolation totale du dashboard CSS               */
 /* ============================================================ */
 .settings-container {
-  max-width: 860px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
@@ -988,7 +988,7 @@ body.dashboard-mode .site-footer {
 /* ============================================================ */
 /* SETTINGS                                                    */
 /* ============================================================ */
-.settings-container { max-width: 860px; margin: 0 auto; }
+.settings-container { max-width: 720px; margin: 0 auto; }
 
 .settings-card {
   background: var(--bg-card);
