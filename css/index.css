@@ -28,6 +28,10 @@
 .hero-actions {
   display: flex;
   gap: 1rem;
+  flex-wrap: nowrap;
+}
+.hero-actions .btn {
+  white-space: nowrap;
 }
 
 .hero-visual {
@@ -50,11 +54,6 @@
 .hero-image-animate {
   width: 130%;
   max-width: 680px;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.hero-image-animate:hover {
-  transform: rotate(2deg) scale(1.05);
 }
 
 /* Navbar basique */
@@ -187,8 +186,9 @@
 
 .ressources-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  overflow-x: auto;
 }
 
 .ressource-card {
@@ -218,7 +218,7 @@
 .ressource-card:hover .ressource-icon {
   background-color: var(--primary);
   color: var(--black);
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.06);
 }
 
 .ressource-card h3 {
@@ -361,7 +361,6 @@
 .step-card:hover .step-icon {
   background: var(--primary);
   color: var(--black);
-  transform: scale(1.05);
 }
 .step-card h3 {
   font-size: 1.05rem;
@@ -406,8 +405,7 @@
 }
 .type-showcase-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.12);
-  transform: translateY(-2px);
+  box-shadow: 0 2px 12px rgba(251, 191, 36, 0.1);
 }
 .type-showcase-icon {
   width: 48px;
@@ -420,18 +418,17 @@
   flex-shrink: 0;
   transition: var(--transition);
 }
-.type-icon-cours   { background: rgba(251,191,36,0.15); color: #b45309; }
-.type-icon-td      { background: rgba(59,130,246,0.12); color: #1d4ed8; }
-.type-icon-tp      { background: rgba(34,197,94,0.12);  color: #16a34a; }
-.type-icon-examen  { background: rgba(239,68,68,0.1);   color: #dc2626; }
-.type-icon-resume  { background: rgba(168,85,247,0.1);  color: #7c3aed; }
-[data-theme="dark"] .type-icon-cours   { background: rgba(251,191,36,0.18); color: #fbbf24; }
-[data-theme="dark"] .type-icon-td      { background: rgba(59,130,246,0.18); color: #60a5fa; }
-[data-theme="dark"] .type-icon-tp      { background: rgba(34,197,94,0.18);  color: #4ade80; }
-[data-theme="dark"] .type-icon-examen  { background: rgba(239,68,68,0.18);  color: #f87171; }
-[data-theme="dark"] .type-icon-resume  { background: rgba(168,85,247,0.18); color: #c084fc; }
+.type-icon-cours,
+.type-icon-td,
+.type-icon-tp,
+.type-icon-examen,
+.type-icon-resume {
+  background: var(--primary-transparent);
+  color: var(--primary);
+}
 .type-showcase-card:hover .type-showcase-icon {
-  transform: scale(1.08);
+  background: var(--primary);
+  color: var(--black);
 }
 .type-showcase-body { flex: 1; }
 .type-showcase-body h3 {
@@ -466,10 +463,10 @@
   border-radius: var(--radius-lg);
   padding: 3rem 2.5rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  text-align: center;
   gap: 2rem;
-  flex-wrap: wrap;
 }
 .cta-content h2 {
   font-size: 1.75rem;

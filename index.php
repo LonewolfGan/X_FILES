@@ -250,8 +250,8 @@ include __DIR__ . '/includes/header.php';
             <a href="<?= BASE_URL ?>pages/register.php" class="btn btn-primary btn-lg">
               <i class="fa-solid fa-user-plus"></i> S'inscrire gratuitement
             </a>
-            <a href="<?= BASE_URL ?>pages/dashboard.php" class="btn btn-secondary btn-lg">
-              <i class="fa-solid fa-eye"></i> Parcourir sans compte
+            <a href="<?= BASE_URL ?>pages/login.php" class="btn btn-secondary btn-lg">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i> Se connecter
             </a>
           </div>
         </div>
