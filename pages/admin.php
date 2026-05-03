@@ -191,6 +191,42 @@ $users = $pdo->query("SELECT u.*, f.name as filiere_name,
                       LEFT JOIN filieres f ON u.filiere_code = f.code
                       ORDER BY u.created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
+// ── Chart data ────────────────────────────────────────────────────────
+$_typeLabels   = ['cours'=>'Cours','td'=>'TD','tp'=>'TP','examen'=>'Examens','resume'=>'Résumés','projet'=>'Projets','autre'=>'Autre'];
+$_statusLabels = ['approuve'=>'Approuvés','en_attente'=>'En attente','rejete'=>'Rejetés'];
+$_frMonths     = ['01'=>'Jan','02'=>'Fév','03'=>'Mar','04'=>'Avr','05'=>'Mai','06'=>'Jun','07'=>'Jul','08'=>'Aoû','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Déc'];
+
+$_rawType    = $pdo->query("SELECT type, COUNT(*) as cnt FROM documents GROUP BY type ORDER BY cnt DESC")->fetchAll(PDO::FETCH_KEY_PAIR);
+$_rawStatus  = $pdo->query("SELECT status, COUNT(*) as cnt FROM documents GROUP BY status")->fetchAll(PDO::FETCH_KEY_PAIR);
+$_rawFiliere = $pdo->query(
+    "SELECT COALESCE(f.name,'Non définie') as filiere, COUNT(d.id) as cnt
+     FROM documents d
+     LEFT JOIN modules m ON d.module_id = m.id
+     LEFT JOIN filieres f ON m.filiere_code = f.code
+     GROUP BY filiere ORDER BY cnt DESC LIMIT 10"
+)->fetchAll(PDO::FETCH_KEY_PAIR);
+$_rawMonths  = $pdo->query(
+    "SELECT DATE_FORMAT(created_at,'%Y-%m') as m, COUNT(*) as cnt
+     FROM documents WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+     GROUP BY m ORDER BY m ASC"
+)->fetchAll(PDO::FETCH_KEY_PAIR);
+
+$_mLabels = []; $_mData = [];
+for ($i = 5; $i >= 0; $i--) {
+    $k = date('Y-m', strtotime("-$i months"));
+    [$yr, $mo] = explode('-', $k);
+    $_mLabels[] = ($_frMonths[$mo] ?? $mo) . ' ' . substr($yr, 2);
+    $_mData[]   = (int)($_rawMonths[$k] ?? 0);
+}
+
+$chartData = [
+    'type'    => ['labels' => array_map(fn($k) => $_typeLabels[$k]   ?? ucfirst($k), array_keys($_rawType)),   'data' => array_values($_rawType)],
+    'status'  => ['labels' => array_map(fn($k) => $_statusLabels[$k] ?? $k,           array_keys($_rawStatus)),  'data' => array_values($_rawStatus)],
+    'filiere' => ['labels' => array_keys($_rawFiliere),   'data' => array_values($_rawFiliere)],
+    'months'  => ['labels' => $_mLabels, 'data' => $_mData],
+];
+// ──────────────────────────────────────────────────────────────────────
+
 $userName = $currentUser['name'];
 $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($userName);
 ?>
@@ -220,6 +256,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
         })();
     </script>
     <link rel="stylesheet" href="<?= BASE_URL ?>css/admin.css?v=1.1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body class="dashboard-mode">
     <div class="dashboard-wrapper">
@@ -320,6 +357,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                     </div>
                     <div class="tab" data-tab="docs">Documents</div>
                     <div class="tab" data-tab="users">Utilisateurs</div>
+                    <div class="tab" data-tab="stats"><i class="fa-solid fa-chart-pie"></i> Statistiques</div>
                 </div>
 
                 <!-- Pending Documents Tab -->
@@ -578,6 +616,34 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                         <?php endif; ?>
                     </div>
                 </div>
+
+                <!-- Stats Tab -->
+                <div id="stats" class="tab-content">
+                    <div class="admin-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Vue d'ensemble</h2>
+                        </div>
+                        <div class="charts-grid">
+                            <div class="chart-card">
+                                <div class="chart-card-title"><i class="fa-solid fa-layer-group"></i> Documents par type</div>
+                                <div class="chart-canvas-wrapper"><canvas id="chartType"></canvas></div>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-card-title"><i class="fa-solid fa-circle-half-stroke"></i> Documents par statut</div>
+                                <div class="chart-canvas-wrapper"><canvas id="chartStatus"></canvas></div>
+                            </div>
+                            <div class="chart-card chart-full">
+                                <div class="chart-card-title"><i class="fa-solid fa-graduation-cap"></i> Documents par filière</div>
+                                <div class="chart-canvas-wrapper chart-canvas-tall"><canvas id="chartFiliere"></canvas></div>
+                            </div>
+                            <div class="chart-card chart-full">
+                                <div class="chart-card-title"><i class="fa-solid fa-chart-line"></i> Uploads — 6 derniers mois</div>
+                                <div class="chart-canvas-wrapper"><canvas id="chartMonths"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -760,12 +826,14 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             var savedTab = localStorage.getItem('adminActiveTab');
             if (savedTab) {
                 showTab(savedTab);
+                if (savedTab === 'stats') initCharts();
             }
 
             document.querySelectorAll('.tab').forEach(function(tab) {
                 tab.addEventListener('click', function() {
                     var tabId = this.getAttribute('data-tab');
                     showTab(tabId, this);
+                    if (tabId === 'stats') initCharts();
                 });
             });
         });
@@ -821,6 +889,46 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             if (!event || event.target.id === 'rejectModal') {
                 document.getElementById('rejectModal').style.display = 'none';
             }
+        }
+
+        var _chartsReady = false;
+        function initCharts() {
+            if (_chartsReady || typeof Chart === 'undefined') return;
+            _chartsReady = true;
+            var data    = <?= json_encode($chartData) ?>;
+            var isDark  = document.documentElement.getAttribute('data-theme') === 'dark';
+            var grid    = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+            var txt     = isDark ? '#9ca3af' : '#6b7280';
+            var palette = ['#fbbf24','#f97316','#3b82f6','#10b981','#8b5cf6','#ec4899','#6366f1','#14b8a6','#f43f5e','#a855f7'];
+            var sColors = {'Approuvés':'#10b981','En attente':'#fbbf24','Rejetés':'#ef4444'};
+            var border  = isDark ? '#111827' : '#ffffff';
+
+            Chart.defaults.font.family = 'inherit';
+            Chart.defaults.color = txt;
+
+            new Chart(document.getElementById('chartType'), {
+                type: 'doughnut',
+                data: { labels: data.type.labels, datasets: [{ data: data.type.data, backgroundColor: palette.slice(0, data.type.data.length), borderWidth: 2, borderColor: border }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { padding: 14, boxWidth: 11, font: { size: 12 } } } } }
+            });
+
+            new Chart(document.getElementById('chartStatus'), {
+                type: 'doughnut',
+                data: { labels: data.status.labels, datasets: [{ data: data.status.data, backgroundColor: data.status.labels.map(function(l){ return sColors[l] || '#9ca3af'; }), borderWidth: 2, borderColor: border }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { padding: 14, boxWidth: 11, font: { size: 12 } } } } }
+            });
+
+            new Chart(document.getElementById('chartFiliere'), {
+                type: 'bar',
+                data: { labels: data.filiere.labels, datasets: [{ label: 'Documents', data: data.filiere.data, backgroundColor: 'rgba(251,191,36,0.75)', borderColor: '#fbbf24', borderWidth: 1, borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: grid }, ticks: { color: txt } }, y: { grid: { color: 'transparent' }, ticks: { color: txt } } } }
+            });
+
+            new Chart(document.getElementById('chartMonths'), {
+                type: 'line',
+                data: { labels: data.months.labels, datasets: [{ label: 'Documents', data: data.months.data, borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.1)', fill: true, tension: 0.4, pointBackgroundColor: '#fbbf24', pointRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: grid }, ticks: { color: txt } }, y: { grid: { color: grid }, ticks: { color: txt, stepSize: 1 }, beginAtZero: true } } }
+            });
         }
 
         function filterTable(inputId, tbodyId) {
