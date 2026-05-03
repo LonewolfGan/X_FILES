@@ -208,8 +208,7 @@
 
 .ressource-card.card:hover {
   transform: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary), var(--shadow-hover);
+  box-shadow: var(--shadow-hover);
 }
 
 .ressource-title {
@@ -234,7 +233,7 @@
 .ressource-card:hover .ressource-icon {
   background-color: var(--primary);
   color: var(--black);
-  transform: scale(1.02);
+  transform: scale(1.1) rotate(5deg);
 }
 
 .ressource-card:hover {
