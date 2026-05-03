@@ -206,6 +206,12 @@
   z-index: 1;
 }
 
+.ressource-card.card:hover {
+  transform: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary), var(--shadow-hover);
+}
+
 .ressource-title {
   font-size: 1.5rem;
   margin-bottom: 2.5rem;
