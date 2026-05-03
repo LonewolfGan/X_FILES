@@ -149,6 +149,20 @@
   color: var(--text-main);
   border-color: var(--primary);
 }
+.btn-danger-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted);
+}
+.btn-danger-ghost:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+}
+[data-theme="dark"] .btn-danger-ghost:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+}
 
 /* Dashboard — boutons header avec texte (Upload, Retour, etc.) */
 .btn-header {
