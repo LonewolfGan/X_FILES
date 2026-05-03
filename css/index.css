@@ -195,11 +195,15 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   overflow-x: auto;
+  position: relative;
+  isolation: isolate;
 }
 
 .ressource-card {
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
 .ressource-title {
@@ -225,6 +229,10 @@
   background-color: var(--primary);
   color: var(--black);
   transform: scale(1.02);
+}
+
+.ressource-card:hover {
+  z-index: 3;
 }
 
 .ressource-card h3 {
