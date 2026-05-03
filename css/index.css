@@ -54,11 +54,6 @@
 .hero-image-animate {
   width: 130%;
   max-width: 680px;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.hero-image-animate:hover {
-  transform: rotate(2deg) scale(1.05);
 }
 
 /* Navbar basique */
@@ -229,7 +224,7 @@
 .ressource-card:hover .ressource-icon {
   background-color: var(--primary);
   color: var(--black);
-  transform: scale(1.06);
+  transform: scale(1.1) rotate(5deg);
 }
 
 .ressource-card h3 {
