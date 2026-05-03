@@ -5,11 +5,12 @@
   padding: 2rem;
   border: 1px solid var(--border-color);
   transition: var(--transition);
+  position: relative;
+  z-index: 1;
 }
 
 .card:hover {
   box-shadow: var(--shadow-hover);
   transform: translateY(-5px);
-  position: relative;
-  z-index: 2;
+  z-index: 3;
 }
