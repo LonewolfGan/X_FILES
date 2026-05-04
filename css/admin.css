@@ -22,7 +22,7 @@
 .section-header .section-title { margin-bottom: 0; font-size: 1rem; font-weight: 600; }
 .section-title { font-size: 1rem; font-weight: 600; }
 .section-content { padding: 1.5rem; }
-.section-content-scroll { overflow-x: auto; padding: 0.5rem 0; }
+.section-content-scroll { overflow-x: auto; }
 
 /* ── Data Table — Refined ───────────────────────────────────────── */
 .data-table {
