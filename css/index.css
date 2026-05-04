@@ -54,6 +54,13 @@
 .hero-image-animate {
   width: 130%;
   max-width: 680px;
+  animation: heroFloat 4s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-18px); }
+  100% { transform: translateY(0px); }
 }
 
 /* Navbar basique */
@@ -207,7 +214,7 @@
 }
 
 .ressource-card.card:hover {
-  transform: none;
+  transform: translateY(-6px) scale(1.02);
   box-shadow: var(--shadow-hover);
 }
 
@@ -257,22 +264,6 @@
   margin-top: auto;
 }
 
-/* ── Hero badge ──────────────────────────────────── */
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: var(--primary-transparent);
-  color: var(--primary);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  border: 1px solid var(--primary);
-  margin-bottom: 1.25rem;
-}
 
 /* ── Section heading ─────────────────────────────── */
 .section-heading {

@@ -52,7 +52,6 @@ include __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="hero-section">
         <div class="hero-content">
-          <span class="hero-badge"><i class="fa-solid fa-bolt"></i> 100 % gratuit, toujours</span>
           <h1 class="hero-title">Le savoir à la portée de tous.</h1>
           <p class="hero-subtitle">
             Partagez, découvrez et téléchargez des ressources académiques au sein
@@ -75,33 +74,6 @@ include __DIR__ . '/includes/header.php';
   </header>
 
   <main id="main-content">
-
-    <!-- ══ STATS BAR ═══════════════════════════════════════════════════ -->
-    <section class="section-stats-bar">
-      <div class="container">
-        <div class="stats-bar-grid">
-          <div class="stats-bar-item">
-            <span class="stats-bar-num"><?= (int)$statFilieres ?></span>
-            <span class="stats-bar-label">Filières</span>
-          </div>
-          <div class="stats-bar-divider"></div>
-          <div class="stats-bar-item">
-            <span class="stats-bar-num"><?= (int)$statModules ?>+</span>
-            <span class="stats-bar-label">Modules disponibles</span>
-          </div>
-          <div class="stats-bar-divider"></div>
-          <div class="stats-bar-item">
-            <span class="stats-bar-num">5</span>
-            <span class="stats-bar-label">Types de ressources</span>
-          </div>
-          <div class="stats-bar-divider"></div>
-          <div class="stats-bar-item">
-            <span class="stats-bar-num">100 %</span>
-            <span class="stats-bar-label">Gratuit &amp; accessible</span>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- ══ FILIÈRES ════════════════════════════════════════════════════ -->
     <section id="ressources" class="section-ressources section-ressources-wide">
