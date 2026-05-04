@@ -316,7 +316,6 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                 <?php endif; ?>
                 
                 <!-- Stats -->
-                <div class="section-content">
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fa-solid fa-file"></i></div>
@@ -343,7 +342,6 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                         <div class="stat-value"><?= number_format($stats['pending_docs']) ?></div>
                         <div class="stat-label">Documents en attente</div>
                     </div>
-                </div>
                 </div>
                 
                 <!-- Tabs -->
@@ -514,7 +512,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                                     <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                                                     <input type="hidden" name="delete_doc" value="1">
                                                 </form>
-                                                <button type="button" onclick="confirmDeleteDoc(<?= (int)$doc['id'] ?>)" class="btn btn-sm btn-success">
+                                                <button type="button" onclick="confirmDeleteDoc(<?= (int)$doc['id'] ?>)" class="btn btn-sm btn-danger">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </td>

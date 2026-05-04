@@ -340,7 +340,6 @@
 .data-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.018); }
 [data-theme="dark"] .data-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.025); }
 .data-table tbody tr:hover { background: var(--primary-transparent) !important; }
-.data-table tbody tr:hover td:first-child { box-shadow: inset 3px 0 0 var(--primary); }
 /* ─────────────────────────────────────────────────────────────── */
 
 /* ========================================== */
