@@ -140,29 +140,3 @@ function register(string $name, string $login, string $password, string $confirm
     return $errors;
 }
 
-// --- MOT DE PASSE OUBLIÉ (Reset par admin uniquement) ---
-
-/**
- * Réinitialise le mot de passe d'un utilisateur par un administrateur
- * Retourne un tableau d'erreurs (vide si succès)
- */
-function adminResetPassword(string $userId, string $newPassword, string $confirm, PDO $pdo): array
-{
-    $errors = [];
-
-    if (strlen($newPassword) < 8)      $errors[] = 'Le mot de passe doit contenir au moins 8 caractères.';
-    if ($newPassword !== $confirm)      $errors[] = 'Les mots de passe ne correspondent pas.';
-
-    $userId = (int)$userId;
-    $stmt = $pdo->prepare('SELECT id FROM users WHERE id = ?');
-    $stmt->execute([$userId]);
-    if (!$stmt->fetch()) $errors[] = 'Utilisateur non trouvé.';
-
-    if (empty($errors)) {
-        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare('UPDATE users SET password_hash = ? WHERE id = ?');
-        $stmt->execute([$hash, $userId]);
-    }
-
-    return $errors;
-}

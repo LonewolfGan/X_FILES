@@ -102,19 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    // Réinitialiser le mot de passe d'un utilisateur
-    if (isset($_POST['reset_password'])) {
-        $userId = intval($_POST['user_id']);
-        $newPass = $_POST['new_password'] ?? '';
-        $confirmPass = $_POST['confirm_password'] ?? '';
-
-        $resetErrors = adminResetPassword($userId, $newPass, $confirmPass, $pdo);
-        if (empty($resetErrors)) {
-            $success = "Mot de passe réinitialisé avec succès.";
-        } else {
-            $errors = array_merge($errors, $resetErrors);
-        }
-    }
 
     // Supprimer un utilisateur - Les documents sont conservés (user_id devient NULL)
     if (isset($_POST['delete_user'])) {
@@ -592,9 +579,6 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                                                 <i class="fa-solid <?= $user['role'] === 'admin' ? 'fa-user' : 'fa-shield-halved' ?>"></i>
                                                             </button>
                                                         </form>
-                                                        <button type="button" class="btn btn-sm" title="Réinitialiser le mot de passe" onclick='showResetModal(<?= (int)$user['id'] ?>, <?= json_encode($user['login']) ?>)'>
-                                                            <i class="fa-solid fa-key"></i>
-                                                        </button>
                                                         <form id="userDelForm<?= $user['id'] ?>" method="post" class="form-inline">
                                                             <?= csrfField() ?>
                                                             <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
@@ -709,36 +693,6 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
         </div>
     </div>
 
-
-    <!-- Modal Reset Password -->
-    <div id="resetModal" class="modal-overlay" style="display: none;" onclick="closeResetModal(event)">
-        <div class="modal-container" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fa-solid fa-key"></i> Réinitialiser le mot de passe</h3>
-                <button class="modal-close" onclick="closeResetModal()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="modal-content">
-                <form method="POST" id="resetForm">
-                    <?= csrfField() ?>
-                    <input type="hidden" name="user_id" id="resetUserId">
-                    <p class="modal-doc-info">Utilisateur: <strong id="resetUserLogin"></strong></p>
-                    <div class="form-group">
-                        <label class="form-label">Nouveau mot de passe</label>
-                        <input type="password" name="new_password" class="form-control" placeholder="8 caractères min." required minlength="8">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Confirmer</label>
-                        <input type="password" name="confirm_password" class="form-control" placeholder="Répéter le mot de passe" required minlength="8">
-                    </div>
-                    <button type="submit" name="reset_password" class="btn btn-primary btn-block">
-                        <i class="fa-solid fa-check"></i> Réinitialiser
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal Reject Document -->
     <div id="rejectModal" class="modal-overlay" style="display: none;" onclick="closeRejectModal(event)">
@@ -891,18 +845,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             }
         }
 
-        // Reset password modal functions
-        function showResetModal(userId, userLogin) {
-            document.getElementById('resetUserId').value = userId;
-            document.getElementById('resetUserLogin').textContent = userLogin;
-            document.getElementById('resetModal').style.display = 'flex';
-        }
 
-        function closeResetModal(event) {
-            if (!event || event.target.id === 'resetModal') {
-                document.getElementById('resetModal').style.display = 'none';
-            }
-        }
 
         // Reject document modal functions
         function showRejectModal(docId, docName) {
