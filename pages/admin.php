@@ -316,6 +316,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                 <?php endif; ?>
                 
                 <!-- Stats -->
+                <div class="section-content">
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fa-solid fa-file"></i></div>
@@ -342,6 +343,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                         <div class="stat-value"><?= number_format($stats['pending_docs']) ?></div>
                         <div class="stat-label">Documents en attente</div>
                     </div>
+                </div>
                 </div>
                 
                 <!-- Tabs -->
