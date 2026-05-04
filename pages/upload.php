@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_doc'])) {
 
                         <div class="form-actions">
                             <button type="submit" name="upload_doc" class="btn btn-primary">
-                                <i class="fa-solid fa-paper-plane"></i> Envoyer le document
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Envoyer le document
                             </button>
                         </div>
                     </form>

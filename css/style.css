@@ -78,6 +78,11 @@ html {
   scroll-behavior: smooth;
 }
 
+@keyframes pageFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-color);
@@ -85,14 +90,10 @@ body {
   line-height: 1.6;
   transition:
     background-color 0.3s ease,
-    color 0.3s ease,
-    opacity 0.22s ease;
+    color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  opacity: 0;
-}
-body.page-ready {
-  opacity: 1;
+  animation: pageFadeIn 0.25s ease forwards;
 }
 
 h1,

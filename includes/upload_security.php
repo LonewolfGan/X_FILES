@@ -287,7 +287,7 @@ function _analyzeImageSightEngine(string $tmpPath): array
     $apiWorkflow = getenv('SIGHTENGINE_WORKFLOW')     ?: 'wfl_kzG0UXGaPExZSfSfi36vn';
 
     if ($apiSecret === '') {
-        $errors[] = 'Impossible de vérifier le contenu de l\'image (configuration manquante). Veuillez contacter l\'administrateur.';
+        // Pas de clé API configurée — on passe sans modération ML
         return [$errors, $warnings];
     }
 
@@ -309,8 +309,8 @@ function _analyzeImageSightEngine(string $tmpPath): array
 
     if ($response === false || $httpCode !== 200) {
         error_log("SIGHTENGINE DEBUG: API error - http_code=$httpCode response=" . ($response ?? 'null'));
-        // En cas d'erreur API, on bloque et demande revue (fail-closed)
-        $errors[] = 'Impossible de vérifier le contenu de l\'image. Veuillez réessayer ou contacter l\'administrateur.';
+        // En cas d'erreur API, on déclenche une revue manuelle (fail-closed)
+        $errors[] = 'La vérification automatique du contenu a échoué. Votre fichier sera examiné manuellement avant publication.';
         return [$errors, $warnings];
     }
 

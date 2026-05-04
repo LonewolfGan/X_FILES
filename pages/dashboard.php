@@ -842,7 +842,7 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         <div id="reviewRejectionReason" class="review-modal-reason-text"></div>
                     </div>
                     <div class="review-modal-footer">
-                        <p class="review-modal-help-text">Vous pouvez demander une revue manuelle ou supprimer ce document.</p>
+                        <p class="review-modal-help-text">Demandez une revue manuelle pour que ton fichier soit vérifié et publié, ou annule l'envoi.</p>
                         <div class="review-modal-buttons">
                             <form method="POST" action="<?= BASE_URL ?>pages/dashboard.php?view=my-docs">
                                 <?= csrfField() ?>
