@@ -635,7 +635,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
     </div>
 
     <!-- Modal Message (erreurs/succès) -->
-    <div id="messageModal" class="modal-overlay" style="display: none; z-index: 9999;" onclick="closeMessageModal(event)">
+    <div id="messageModal" class="modal-overlay" onclick="closeMessageModal(event)">
         <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <div id="messageIcon"></div>
@@ -649,7 +649,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
     </div>
 
     <!-- Modal Confirm -->
-    <div id="confirmModal" class="modal-overlay" style="display: none; z-index: 9999;" onclick="closeConfirmModal(event)">
+    <div id="confirmModal" class="modal-overlay" onclick="closeConfirmModal(event)">
         <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 id="confirmTitle" class="modal-title">Confirmation</h3>
@@ -668,7 +668,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
     </div>
 
     <!-- Modal Approve Document -->
-    <div id="approveModal" class="modal-overlay" style="display: none;" onclick="closeApproveModal(event)">
+    <div id="approveModal" class="modal-overlay" onclick="closeApproveModal(event)">
         <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fa-solid fa-check-circle"></i> Approuver le document</h3>
@@ -695,7 +695,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
 
 
     <!-- Modal Reject Document -->
-    <div id="rejectModal" class="modal-overlay" style="display: none;" onclick="closeRejectModal(event)">
+    <div id="rejectModal" class="modal-overlay" onclick="closeRejectModal(event)">
         <div class="modal-container" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fa-solid fa-times-circle"></i> Rejeter le document</h3>
@@ -748,10 +748,10 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             btn.className = 'btn btn-danger';
             btn.textContent = label;
             btn.onclick = function() {
-                document.getElementById('confirmModal').style.display = 'none';
+                document.getElementById('confirmModal').classList.remove('active');
                 onConfirm();
             };
-            document.getElementById('confirmModal').style.display = 'flex';
+            document.getElementById('confirmModal').classList.add('active');
         }
 
         function confirmDeleteDoc(docId) {
@@ -815,13 +815,13 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
 
         function closeConfirmModal(event) {
             if (!event || event.target.id === 'confirmModal') {
-                document.getElementById('confirmModal').style.display = 'none';
+                document.getElementById('confirmModal').classList.remove('active');
             }
         }
 
         function closeMessageModal(event) {
             if (!event || event.target.id === 'messageModal') {
-                document.getElementById('messageModal').style.display = 'none';
+                document.getElementById('messageModal').classList.remove('active');
             }
         }
 
@@ -829,12 +829,12 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
         function showApproveModal(docId, docName) {
             document.getElementById('approveDocId').value = docId;
             document.getElementById('approveDocName').textContent = docName;
-            document.getElementById('approveModal').style.display = 'flex';
+            document.getElementById('approveModal').classList.add('active');
         }
 
         function closeApproveModal(event) {
             if (!event || event.target.id === 'approveModal') {
-                document.getElementById('approveModal').style.display = 'none';
+                document.getElementById('approveModal').classList.remove('active');
             }
         }
         
@@ -852,12 +852,12 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             document.getElementById('rejectDocId').value = docId;
             document.getElementById('rejectDocName').textContent = docName;
             document.getElementById('rejectReason').value = '';
-            document.getElementById('rejectModal').style.display = 'flex';
+            document.getElementById('rejectModal').classList.add('active');
         }
 
         function closeRejectModal(event) {
             if (!event || event.target.id === 'rejectModal') {
-                document.getElementById('rejectModal').style.display = 'none';
+                document.getElementById('rejectModal').classList.remove('active');
             }
         }
 
