@@ -12,9 +12,6 @@ Thumbs.db
 # Logs
 logs/
 
-# Not needed for deployment
-mySkills/
-
 # Uploads
 uploads/
 
@@ -24,3 +21,15 @@ doc/
 # Sensitive config files
 config.infinityfree.php
 *.ini
+
+# Replit-specific files
+.replit
+replit.nix
+replit.md
+skills-lock.json
+.agents/
+.local/
+.claude/
+attached_assets/
+start.sh
+start-mysql.sh

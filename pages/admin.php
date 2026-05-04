@@ -787,10 +787,26 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
         }
 
         // Admin confirmation functions
+        function openDangerConfirm(title, message, label, onConfirm) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmText').textContent = message;
+            var btn = document.getElementById('confirmBtn');
+            btn.className = 'btn btn-danger';
+            btn.textContent = label;
+            btn.onclick = function() {
+                document.getElementById('confirmModal').style.display = 'none';
+                onConfirm();
+            };
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
         function confirmDeleteDoc(docId) {
-            showConfirm('Supprimer ce document définitivement ?', function() {
-                document.getElementById('delForm' + docId).submit();
-            }, 'Confirmer');
+            openDangerConfirm(
+                'Supprimer le document',
+                'Ce document sera supprimé définitivement. Cette action est irréversible.',
+                'Supprimer',
+                function() { document.getElementById('delForm' + docId).submit(); }
+            );
         }
 
         function confirmRejectDoc(docId) {
@@ -800,9 +816,12 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
         }
 
         function confirmDeleteUser(userId) {
-            showConfirm('Supprimer cet utilisateur et tous ses documents ?', function() {
-                document.getElementById('userDelForm' + userId).submit();
-            }, 'Confirmer');
+            openDangerConfirm(
+                'Supprimer l\'utilisateur',
+                'Cet utilisateur et tous ses documents seront supprimés définitivement. Cette action est irréversible.',
+                'Supprimer',
+                function() { document.getElementById('userDelForm' + userId).submit(); }
+            );
         }
 
         function showTab(tab, clickedElement) {
