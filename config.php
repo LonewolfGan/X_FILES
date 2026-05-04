@@ -7,20 +7,7 @@
 
 
 // --- ENVIRONNEMENT ---
-if (getenv('DB_HOST') !== false) {
-    // Render (variables d'environnement)
-    $dbHost = getenv('DB_HOST');
-    $dbPort = getenv('DB_PORT') !== false ? getenv('DB_PORT') : '3307';
-    if ($dbPort && !str_contains($dbHost, ':')) {
-        define('DB_HOST', $dbHost . ':' . $dbPort);
-    } else {
-        define('DB_HOST', $dbHost);
-    }
-    define('DB_NAME', getenv('DB_NAME'));
-    define('DB_USER', getenv('DB_USER'));
-    define('DB_PASS', getenv('DB_PASSWORD'));
-    define('BASE_URL', '/');
-} elseif (file_exists(__DIR__ . '/config.infinityfree.php')) {
+if (file_exists(__DIR__ . '/config.infinityfree.php')) {
     // InfinityFree
     require_once __DIR__ . '/config.infinityfree.php';
 } else {
@@ -32,27 +19,54 @@ if (getenv('DB_HOST') !== false) {
 
     // Auto-detect BASE_URL so CSS/JS links work whether the project is at the
     // server root (http://localhost/) or in a subfolder (http://localhost/xfiles/).
-    // config.php is always at the project root, so we compare its real path
-    // against the document root to build the correct URL prefix.
-    $_docRoot  = rtrim(str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: ''), '/');
+    // config.php is always at the project root.
+    
+    $_docRoot  = rtrim(str_replace('\\', '/', realpath(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '') ?: ''), '/');
     $_projRoot = rtrim(str_replace('\\', '/', __DIR__), '/');
-    $_subPath  = ($_docRoot !== '' && str_starts_with($_projRoot, $_docRoot))
-        ? substr($_projRoot, strlen($_docRoot))
-        : '';
-    define('BASE_URL', $_subPath !== '' ? $_subPath . '/' : '/');
+    $_subPath = '';
+
+    if ($_docRoot !== '' && stripos($_projRoot, $_docRoot) === 0) {
+        // Method 1: Filesystem-based (works if project is inside DOCUMENT_ROOT)
+        $_subPath = substr($_projRoot, strlen($_docRoot));
+    } else {
+        // Method 2: SCRIPT_NAME based (works with Apache Alias / VirtualHosts)
+        // config.php is at project root. We compare SCRIPT_FILENAME with project root
+        // to find the relative web path.
+        $_scriptName = str_replace('\\', '/', isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '');
+        $_scriptFilename = str_replace('\\', '/', realpath(isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '') ?: '');
+        $_projRoot = str_replace('\\', '/', $_projRoot);
+
+        if ($_scriptName !== '' && $_scriptFilename !== '' && stripos($_scriptFilename, $_projRoot) === 0) {
+            $_extraPath = substr($_scriptFilename, strlen($_projRoot));
+            if ($_extraPath !== '' && substr($_scriptName, -strlen($_extraPath)) === $_extraPath) {
+                $_subPath = substr($_scriptName, 0, -strlen($_extraPath));
+            } else {
+                $_subPath = $_scriptName;
+            }
+        }
+    }
+
+    // Ensure forward slashes, no double slashes, and normalized format /path/
+    $_subPath = str_replace('\\', '/', $_subPath);
+    $_subPath = trim($_subPath, '/');
+    $baseUrl = $_subPath !== '' ? '/' . $_subPath . '/' : '/';
+    define('BASE_URL', $baseUrl);
+
+    // Debugging (uncomment if needed)
+    // error_log("BASE_URL detected: " . BASE_URL);
 }
 
 // --- HTTPS EN PRODUCTION ---
 if (php_sapi_name() !== 'cli' && !headers_sent()) {
-    $host = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
+    $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
     $hostNoPort = strtolower(explode(':', $host)[0]);
-    $serverAddr = $_SERVER['SERVER_ADDR'] ?? '';
-    $isLocal = in_array($hostNoPort, ['localhost', '127.0.0.1', '::1'], true)
-        || str_contains($hostNoPort, '.replit.dev')
-        || str_contains($hostNoPort, '.repl.co')
-        || str_contains($hostNoPort, '.replit.app')
-        || str_contains($hostNoPort, '.kirk.replit.dev')
-        || in_array($serverAddr, ['127.0.0.1', '::1'], true);
+    $serverAddr = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+    $isLocal = in_array($hostNoPort, array('localhost', '127.0.0.1', '::1'), true)
+        || strpos($hostNoPort, '.replit.dev') !== false
+        || strpos($hostNoPort, '.repl.co') !== false
+        || strpos($hostNoPort, '.replit.app') !== false
+        || strpos($hostNoPort, '.kirk.replit.dev') !== false
+        || in_array($serverAddr, array('127.0.0.1', '::1'), true);
     $httpsOn = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (isset($_SERVER['SERVER_PORT']) && (string)$_SERVER['SERVER_PORT'] === '443')
         || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
@@ -78,7 +92,7 @@ if (!defined('ALLOWED_TYPES')) {
 $dbHost = DB_HOST;
 $dbPort = 3307;
 
-if (str_contains($dbHost, ':')) {
+if (strpos($dbHost, ':') !== false) {
     $parts  = explode(':', $dbHost);
     $dbHost = $parts[0];
     $dbPort = intval($parts[1]);
