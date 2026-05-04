@@ -859,6 +859,12 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
             });
         });
 
+        function closeConfirmModal(event) {
+            if (!event || event.target.id === 'confirmModal') {
+                document.getElementById('confirmModal').style.display = 'none';
+            }
+        }
+
         function closeMessageModal(event) {
             if (!event || event.target.id === 'messageModal') {
                 document.getElementById('messageModal').style.display = 'none';

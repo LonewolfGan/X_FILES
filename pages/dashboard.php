@@ -645,11 +645,11 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                                         <i class="fa-solid fa-download"></i>
                                                     </a>
 
-                                                    <form method="POST" action="<?= BASE_URL ?>pages/dashboard.php?view=my-docs" class="my-docs-delete-form">
+                                                    <form id="ownDelForm<?= (int)$doc['id'] ?>" method="POST" action="<?= BASE_URL ?>pages/dashboard.php?view=my-docs" class="my-docs-delete-form">
                                                         <?= csrfField() ?>
                                                         <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                                                         <input type="hidden" name="delete_own_doc" value="1">
-                                                        <button type="submit" class="btn btn-sm btn-primary my-docs-action-btn">
+                                                        <button type="button" onclick="confirmDeleteOwnDoc(<?= (int)$doc['id'] ?>)" class="btn btn-sm btn-danger my-docs-action-btn">
                                                             <i class="fa-solid fa-trash"></i> Supprimer
                                                         </button>
                                                     </form>
@@ -920,6 +920,21 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         function openPreview(docId) {
             const viewUrl = '<?= BASE_URL ?>pages/view.php?id=' + docId;
             window.open(viewUrl, '_blank');
+        }
+
+        function confirmDeleteOwnDoc(docId) {
+            if (typeof XModal !== 'undefined' && XModal.confirm) {
+                XModal.confirm(
+                    'Ce document sera supprimé définitivement. Cette action est irréversible.',
+                    function() { document.getElementById('ownDelForm' + docId).submit(); },
+                    null,
+                    'Supprimer le document'
+                );
+            } else {
+                if (confirm('Supprimer ce document définitivement ?')) {
+                    document.getElementById('ownDelForm' + docId).submit();
+                }
+            }
         }
 
     </script>
