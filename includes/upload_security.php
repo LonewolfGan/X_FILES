@@ -282,11 +282,20 @@ function _analyzeImageSightEngine(string $tmpPath): array
     $errors   = [];
     $warnings = [];
 
+    $apiUser     = getenv('SIGHTENGINE_API_USER')     ?: '1336098';
+    $apiSecret   = getenv('SIGHTENGINE_API_SECRET')   ?: '';
+    $apiWorkflow = getenv('SIGHTENGINE_WORKFLOW')     ?: 'wfl_kzG0UXGaPExZSfSfi36vn';
+
+    if ($apiSecret === '') {
+        $errors[] = 'Impossible de vérifier le contenu de l\'image (configuration manquante). Veuillez contacter l\'administrateur.';
+        return [$errors, $warnings];
+    }
+
     $params = array(
-        'media' => new CURLFile($tmpPath),
-        'workflow' => 'wfl_kzG0UXGaPExZSfSfi36vn',
-        'api_user' => '1336098',
-        'api_secret' => 'HvL2jwqg67V7PHGGfscn9vZ6NLZqo69V',
+        'media'    => new CURLFile($tmpPath),
+        'workflow' => $apiWorkflow,
+        'api_user' => $apiUser,
+        'api_secret' => $apiSecret,
     );
 
     $ch = curl_init('https://api.sightengine.com/1.0/check-workflow.json');

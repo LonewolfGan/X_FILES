@@ -18,18 +18,11 @@ if (getenv('DB_HOST') !== false) {
     define('DB_USER', getenv('DB_USER'));
     define('DB_PASS', getenv('DB_PASSWORD'));
     define('BASE_URL', '/');
-} elseif ((isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] === 'localhost') || (isset($_SERVER['SERVER_ADDR']) && in_array($_SERVER['SERVER_ADDR'], ['127.0.0.1', '::1'], true))) {
-    // Local / Replit
-    define('DB_HOST', '127.0.0.1:3306');
-    define('DB_NAME', 'xfiles');
-    define('DB_USER', 'root');
-    define('DB_PASS', '');
-    define('BASE_URL', '/');
 } elseif (file_exists(__DIR__ . '/config.infinityfree.php')) {
     // InfinityFree
     require_once __DIR__ . '/config.infinityfree.php';
 } else {
-    // Fallback (Replit / any host)
+    // Local / Replit — connect via Unix socket to avoid TCP port conflicts
     define('DB_HOST', '127.0.0.1:3306');
     define('DB_NAME', 'xfiles');
     define('DB_USER', 'root');
@@ -77,9 +70,15 @@ if ($dbHost === 'localhost') {
     $dbHost = '127.0.0.1';
 }
 
+// Use Unix socket when available (Replit local dev) to avoid TCP port conflicts
+$_socketPath = '/home/runner/mysql-run/mysqld.sock';
+$_dsn = file_exists($_socketPath)
+    ? 'mysql:unix_socket=' . $_socketPath . ';dbname=' . DB_NAME . ';charset=utf8mb4'
+    : 'mysql:host=' . $dbHost . ';port=' . $dbPort . ';dbname=' . DB_NAME . ';charset=utf8mb4';
+
 try {
     $pdo = new PDO(
-        'mysql:host=' . $dbHost . ';port=' . $dbPort . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+        $_dsn,
         DB_USER,
         DB_PASS,
         [
