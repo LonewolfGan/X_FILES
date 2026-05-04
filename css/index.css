@@ -188,10 +188,10 @@
   padding: 5rem 1.5rem;
 }
 .section-ressources-wide {
-  max-width: 1440px;
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 5rem 3rem;
+  padding: 5rem 2rem;
 }
 
 .section-testimonials {
@@ -209,8 +209,8 @@
 
 .ressources-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
   overflow: visible;
   position: relative;
   isolation: isolate;
