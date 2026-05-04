@@ -57,6 +57,20 @@ $ogImage      = $pageOgImage ?: 'https://' . ($_SERVER['HTTP_HOST'] ?? 'xfiles.r
       document.documentElement.setAttribute('data-theme', s || sys);
     })();
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.classList.add('page-ready');
+      document.querySelectorAll('a[href]').forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('javascript') || link.target === '_blank') return;
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.body.style.opacity = '0';
+          setTimeout(function() { window.location.href = href; }, 220);
+        });
+      });
+    });
+  </script>
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css?v=1.1.0" />

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 if (isLoggedIn()) {
-    $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'index.php';
+    $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'pages/dashboard.php';
     unset($_SESSION['redirect_after_login']);
     header('Location: ' . $redirect);
     exit;
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'] ?? '';
 
         if (login($login, $password, $pdo)) {
-            $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'index.php';
+            $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'pages/dashboard.php';
             unset($_SESSION['redirect_after_login']);
             header('Location: ' . $redirect);
             exit;
