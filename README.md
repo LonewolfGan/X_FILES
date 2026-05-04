@@ -6,15 +6,14 @@ Plateforme de partage de ressources académiques pour étudiants : cours, TD, TP
 
 - **Backend** : PHP 8.2 + PDO (MariaDB/MySQL)
 - **Frontend** : CSS personnalisé, Font Awesome 6, jQuery + Nice Select
-- **Hébergement** : InfinityFree (prod)
+- **Hébergement** : InfinityFree : https://hdev.great-site.net/
+- **Repo**: https://github.com/LonewolfGan/X_FILES
 
 ## Structure
 
 ```
 ├── config.php              Configuration BDD + PDO + CSRF
 ├── index.php               Page d'accueil publique
-├── router.php              Routeur PHP built-in server
-├── start.sh                Script de démarrage MariaDB + PHP
 ├── projet.sql              Schéma + données initiales
 ├── pages/
 │   ├── login.php           Connexion
@@ -37,12 +36,6 @@ Plateforme de partage de ressources académiques pour étudiants : cours, TD, TP
 └── images/                 Illustrations
 ```
 
-## Lancer le projet (Replit)
-
-Le projet démarre automatiquement via le bouton **Run**. Le script `start.sh` :
-1. Initialise et démarre MariaDB via socket Unix
-2. Crée la base `xfiles` et importe `projet.sql` si nécessaire
-3. Lance le serveur PHP sur `0.0.0.0:5000`
 
 ## Compte admin par défaut
 
