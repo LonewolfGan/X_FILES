@@ -33,7 +33,7 @@ body.dashboard-mode .site-footer {
 .dashboard-sidebar {
   width: var(--sidebar-width);
   background: var(--bg-color);
-  border-right: none;
+  border-right: 1px solid var(--border-color);
   border-radius: 0;
   position: fixed;
   left: 0;
