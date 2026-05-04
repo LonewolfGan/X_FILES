@@ -52,7 +52,6 @@
 .btn-primary:hover {
   background: var(--primary-hover);
   color: var(--black);
-  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
@@ -64,7 +63,6 @@
 .btn-secondary:hover {
   background: var(--secondary-hover);
   color: var(--mint-cream);
-  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
@@ -108,7 +106,6 @@
 .btn-success:hover {
   background: var(--primary-hover);
   color: var(--black);
-  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
@@ -224,7 +221,7 @@
   font-weight: 600;
   background: transparent;
   color: var(--primary);
-  border: 1.5px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   cursor: pointer;
   text-align: center;
@@ -300,7 +297,6 @@
 }
 .btn-banner:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
 }
 [data-theme="dark"] .btn-banner {
   background: var(--black);

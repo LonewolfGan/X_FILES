@@ -18,4 +18,4 @@ Disallow: /start.sh
 Disallow: /start-mysql.sh
 Disallow: /projet.sql
 
-Sitemap: https://xfiles.replit.app/sitemap.xml
+Sitemap: http://hdev.great-site.net/sitemap.xml

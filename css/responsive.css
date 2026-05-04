@@ -79,7 +79,7 @@
 /* --- CONTAINER RESPONSIVE --- */
 @media (max-width: 640px) {
   .container {
-    padding: 0 1rem;
+    padding: 1rem;
   }
 
   html {

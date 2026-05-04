@@ -1,8 +1,3 @@
-/**
- * XFILES Modal System
- * Système modal réutilisable pour remplacer alert(), confirm(), et notifications
- * Couleurs strictes: Jaune #fbbf24 et Noir #000000 uniquement
- */
 
 (function() {
     'use strict';
@@ -63,9 +58,6 @@
         return overlay;
     }
 
-    // ==========================================
-    // MODAL D'ALERTE (remplace alert())
-    // ==========================================
     function createAlertModal() {
         const overlay = createElement('div', 'xmodal-alert-overlay');
         overlay.id = 'xmodal-alert';
@@ -89,9 +81,7 @@
         return overlay;
     }
 
-    // ==========================================
-    // SYSTÈME DE TOASTS/NOTIFICATIONS
-    // ==========================================
+
     function createToastContainer() {
         const container = createElement('div', 'xmodal-toast-container');
         container.id = 'xmodal-toast-container';

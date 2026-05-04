@@ -422,7 +422,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                                             <input type="hidden" name="rejection_reason" value="Document rejeté par l'administrateur">
                                                             <input type="hidden" name="reject_doc" value="1">
                                                         </form>
-                                                        <button type="button" onclick="confirmRejectDoc(<?= (int)$doc['id'] ?>)" class="btn btn-danger btn-sm" title="Rejeter">
+                                                        <button type="button" onclick="confirmRejectDoc(<?= (int)$doc['id'] ?>)" class="btn btn-primary btn-sm" title="Rejeter">
                                                             <i class="fa-solid fa-times"></i>
                                                         </button>
                                                     </div>
@@ -499,7 +499,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                                     <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                                                     <input type="hidden" name="delete_doc" value="1">
                                                 </form>
-                                                <button type="button" onclick="confirmDeleteDoc(<?= (int)$doc['id'] ?>)" class="btn btn-sm btn-danger">
+                                                <button type="button" onclick="confirmDeleteDoc(<?= (int)$doc['id'] ?>)" class="btn btn-sm btn-primary">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </td>
