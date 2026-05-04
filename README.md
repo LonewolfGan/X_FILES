@@ -77,7 +77,5 @@ Le projet démarre automatiquement via le bouton **Run**. Le script `start.sh` :
 
 | Env         | DB Host              | BASE_URL   |
 |-------------|----------------------|------------|
-| Replit      | socket Unix local    | `/`        |
 | Local       | `127.0.0.1:3307`     | `/`        |
 | InfinityFree| `config.infinityfree.php` | `/`   |
-| Render      | Variables d'env      | `/`        |
