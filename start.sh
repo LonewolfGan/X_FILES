@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-MARIADB_DIR=/nix/store/4kba2qp4a04j342l372clgm74x6180ix-mariadb-server-11.4.7
+MARIADB_DIR=/nix/store/a4jsa8kjdn3wlccj2wkvhxqza38rpxzf-mariadb-server-10.11.13
 MYSQL_DATA=/home/runner/mysql-data
 MYSQL_RUN=/home/runner/mysql-run
 MARIADB_CLI="$MARIADB_DIR/bin/mariadb --socket=$MYSQL_RUN/mysqld.sock -u root"
@@ -21,7 +21,7 @@ if [ ! -f $MYSQL_DATA/ib_logfile0 ]; then
 fi
 
 # Step 2: Start MariaDB in foreground (this is the main process)
-echo "[MySQL] Starting MariaDB 11.4.7..."
+echo "[MySQL] Starting MariaDB 10.11.13..."
 $MARIADB_DIR/bin/mariadbd --no-defaults \
     --datadir=$MYSQL_DATA \
     --socket=$MYSQL_RUN/mysqld.sock \
@@ -54,8 +54,8 @@ TABLES_COUNT=$($MARIADB_CLI -se "SELECT COUNT(*) FROM information_schema.tables 
 if [ "$TABLES_COUNT" = "0" ]; then
     echo "[MySQL] Installing system tables..."
     $MARIADB_CLI -e "CREATE DATABASE IF NOT EXISTS mysql;" 2>/dev/null || true
-    $MARIADB_CLI mysql < $MARIADB_DIR/share/mysql/mariadb_system_tables.sql 2>/dev/null || true
-    $MARIADB_CLI mysql < $MARIADB_DIR/share/mysql/mariadb_system_tables_data.sql 2>/dev/null || true
+    $MARIADB_CLI mysql < $MARIADB_DIR/share/mysql/mysql_system_tables.sql 2>/dev/null || true
+    $MARIADB_CLI mysql < $MARIADB_DIR/share/mysql/mysql_system_tables_data.sql 2>/dev/null || true
     echo "[MySQL] System tables installed."
 fi
 

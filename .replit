@@ -38,3 +38,9 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[userenv]
+
+[userenv.shared]
+SIGHTENGINE_API_USER = "1336098"
+SIGHTENGINE_WORKFLOW = "wfl_kzG0UXGaPExZSfSfi36vn"
