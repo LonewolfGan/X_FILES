@@ -623,6 +623,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                         <div class="section-header">
                             <h2 class="section-title">Vue d'ensemble</h2>
                         </div>
+                        <div class="section-content">
                         <div class="charts-grid">
                             <div class="chart-card">
                                 <div class="chart-card-title"><i class="fa-solid fa-layer-group"></i> Documents par type</div>
@@ -640,6 +641,7 @@ $userAvatar = $currentUser['avatar'] ?? 'https://ui-avatars.com/api/?name=' . ur
                                 <div class="chart-card-title"><i class="fa-solid fa-chart-line"></i> Uploads — 6 derniers mois</div>
                                 <div class="chart-canvas-wrapper"><canvas id="chartMonths"></canvas></div>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>
