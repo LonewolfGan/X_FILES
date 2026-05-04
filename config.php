@@ -27,7 +27,17 @@ if (getenv('DB_HOST') !== false) {
     define('DB_NAME', 'xfiles');
     define('DB_USER', 'root');
     define('DB_PASS', '');
-    define('BASE_URL', '/');
+
+    // Auto-detect BASE_URL so CSS/JS links work whether the project is at the
+    // server root (http://localhost/) or in a subfolder (http://localhost/xfiles/).
+    // config.php is always at the project root, so we compare its real path
+    // against the document root to build the correct URL prefix.
+    $_docRoot  = rtrim(str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: ''), '/');
+    $_projRoot = rtrim(str_replace('\\', '/', __DIR__), '/');
+    $_subPath  = ($_docRoot !== '' && str_starts_with($_projRoot, $_docRoot))
+        ? substr($_projRoot, strlen($_docRoot))
+        : '';
+    define('BASE_URL', $_subPath !== '' ? $_subPath . '/' : '/');
 }
 
 // --- HTTPS EN PRODUCTION ---
