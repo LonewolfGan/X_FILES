@@ -18,9 +18,11 @@
 /* Admin Sections */
 .admin-section { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem; overflow: hidden; }
 .section-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.section-header h2,
+.section-header .section-title { margin-bottom: 0; font-size: 1rem; font-weight: 600; }
 .section-title { font-size: 1rem; font-weight: 600; }
 .section-content { padding: 1.5rem; }
-.section-content-scroll { overflow-x: auto; padding: 0; }
+.section-content-scroll { overflow-x: auto; padding: 0.5rem 0; }
 
 /* ── Data Table — Refined ───────────────────────────────────────── */
 .data-table {

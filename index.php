@@ -58,12 +58,21 @@ include __DIR__ . '/includes/header.php';
             d'une communauté d'étudiants engagée.
           </p>
           <div class="hero-actions">
-            <a href="<?= BASE_URL ?>pages/register.php" class="btn btn-primary btn-lg">
-              <i class="fa-solid fa-cloud-arrow-up"></i> Commencer gratuitement
-            </a>
-            <a href="<?= BASE_URL ?>pages/dashboard.php" class="btn btn-secondary btn-lg">
-              <i class="fa-solid fa-magnifying-glass"></i> Explorer les ressources
-            </a>
+            <?php if (isLoggedIn()): ?>
+              <a href="<?= BASE_URL ?>pages/upload.php" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Publier une ressource
+              </a>
+              <a href="<?= BASE_URL ?>pages/dashboard.php" class="btn btn-secondary btn-lg">
+                <i class="fa-solid fa-magnifying-glass"></i> Explorer les ressources
+              </a>
+            <?php else: ?>
+              <a href="<?= BASE_URL ?>pages/register.php" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Commencer gratuitement
+              </a>
+              <a href="<?= BASE_URL ?>pages/dashboard.php" class="btn btn-secondary btn-lg">
+                <i class="fa-solid fa-magnifying-glass"></i> Explorer les ressources
+              </a>
+            <?php endif; ?>
           </div>
         </div>
         <div class="hero-visual">
@@ -214,6 +223,20 @@ include __DIR__ . '/includes/header.php';
     <section class="section-cta">
       <div class="container">
         <div class="cta-card">
+            <?php if (isLoggedIn()): ?>
+          <div class="cta-content">
+            <h2>Bienvenue, <?= htmlspecialchars($_SESSION['user_name'] ?? 'Étudiant') ?> !</h2>
+            <p>Continuez à explorer les ressources ou partagez vos propres documents avec la communauté.</p>
+          </div>
+          <div class="cta-actions">
+            <a href="<?= BASE_URL ?>pages/upload.php" class="btn btn-primary btn-lg">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Publier un document
+            </a>
+            <a href="<?= BASE_URL ?>pages/dashboard.php" class="btn btn-secondary btn-lg">
+              <i class="fa-solid fa-magnifying-glass"></i> Explorer les ressources
+            </a>
+          </div>
+          <?php else: ?>
           <div class="cta-content">
             <h2>Prêt à rejoindre la communauté ?</h2>
             <p>Créez votre compte gratuitement et accédez à toutes les ressources en quelques secondes.</p>
@@ -226,6 +249,7 @@ include __DIR__ . '/includes/header.php';
               <i class="fa-solid fa-arrow-right-to-bracket"></i> Se connecter
             </a>
           </div>
+          <?php endif; ?>
         </div>
       </div>
     </section>

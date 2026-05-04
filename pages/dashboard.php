@@ -443,8 +443,8 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
                 <div class="header-actions">
                     <a href="<?= BASE_URL ?>pages/upload.php" class="btn btn-header">
-                        <i class="fa-solid fa-plus"></i>
-                        <span class="upload-btn-text">Upload</span>
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span class="upload-btn-text">Publier</span>
                     </a>
                     <a href="<?= BASE_URL ?>index.php" class="btn btn-icon">
                         <i class="fa-solid fa-house"></i>
@@ -479,7 +479,7 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         </div>
                     <?php endif; ?>
 
-                    <div class="settings-card card-premium">
+                    <div class="settings-card">
                         <form action="<?= BASE_URL ?>pages/dashboard.php?view=settings" method="post" enctype="multipart/form-data" class="settings-form">
                             <?= csrfField() ?>
                             <div class="avatar-upload-section">
@@ -593,12 +593,12 @@ foreach ($semesterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
                             <h3>Aucun document</h3>
                             <p>Vous n'avez pas encore uploadé de documents.</p>
                             <a href="<?= BASE_URL ?>pages/upload.php" class="btn btn-primary my-docs-upload-btn">
-                                <i class="fa-solid fa-plus"></i> Uploader un document
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Publier un document
                             </a>
                         </div>
                     <?php else: ?>
                         <div class="docs-table-container my-docs-table-container">
-                            <table class="docs-table my-docs-table">
+                            <table class="data-table my-docs-table">
                                 <thead class="my-docs-table-head">
                                     <tr>
                                         <th>Document</th>

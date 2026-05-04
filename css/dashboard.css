@@ -194,7 +194,6 @@ body.dashboard-mode .site-footer {
   margin-left: var(--sidebar-width);
   padding: 0 2.5rem;
   min-height: 100vh;
-  border-left: 1px solid var(--border-color);
   transition: margin-left 0.26s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1212,32 +1211,10 @@ body.dashboard-mode .site-footer {
 
 .my-docs-table-container {
   background: var(--bg-card);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border-color);
-}
-
-.my-docs-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.my-docs-table-head {
-  background: transparent;
-}
-
-.my-docs-table th {
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  background: transparent !important;
-  color: var(--text-main);
-}
-
-.my-docs-table td {
-  padding: 1rem;
-  border-top: 1px solid var(--border-color);
-  vertical-align: middle;
+  overflow-x: auto;
 }
 
 .my-docs-file-meta {
