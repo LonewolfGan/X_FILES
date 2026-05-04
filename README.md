@@ -6,8 +6,7 @@ Plateforme de partage de ressources académiques pour étudiants : cours, TD, TP
 
 - **Backend** : PHP 8.2 + PDO (MariaDB/MySQL)
 - **Frontend** : CSS personnalisé, Font Awesome 6, jQuery + Nice Select
-- **Serveur** : PHP built-in server (port 5000) + MariaDB via socket Unix
-- **Hébergement** : Replit (dev) / Render / InfinityFree (prod)
+- **Hébergement** : InfinityFree (prod)
 
 ## Structure
 
