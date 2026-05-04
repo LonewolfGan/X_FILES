@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
 
-MARIADB_DIR=/nix/store/a4jsa8kjdn3wlccj2wkvhxqza38rpxzf-mariadb-server-10.11.13
+# Dynamically find MariaDB in the Nix store so this script survives package updates
+MARIADB_DIR=$(dirname "$(dirname "$(which mariadbd 2>/dev/null || ls /nix/store/*/bin/mariadbd 2>/dev/null | head -1)")")
+
+if [ -z "$MARIADB_DIR" ] || [ ! -f "$MARIADB_DIR/bin/mariadbd" ]; then
+    echo "[MySQL] ERROR: Could not find MariaDB installation."
+    exit 1
+fi
+
 MYSQL_DATA=/home/runner/mysql-data
 MYSQL_RUN=/home/runner/mysql-run
 MARIADB_CLI="$MARIADB_DIR/bin/mariadb --socket=$MYSQL_RUN/mysqld.sock -u root"
@@ -20,8 +27,8 @@ if [ ! -f $MYSQL_DATA/ib_logfile0 ]; then
     echo "[MySQL] InnoDB initialized."
 fi
 
-# Step 2: Start MariaDB in foreground (this is the main process)
-echo "[MySQL] Starting MariaDB 10.11.13..."
+# Step 2: Start MariaDB in background
+echo "[MySQL] Starting MariaDB..."
 $MARIADB_DIR/bin/mariadbd --no-defaults \
     --datadir=$MYSQL_DATA \
     --socket=$MYSQL_RUN/mysqld.sock \
