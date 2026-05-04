@@ -14,7 +14,7 @@
         <div class="nav-links">
           <a href="<?= BASE_URL ?>pages/dashboard.php">Explorer</a>
           <a href="<?= BASE_URL ?>index.php#ressources">Filières</a>
-          <a href="<?= BASE_URL ?>index.php#testimonials">À propos</a>
+          <a href="<?= BASE_URL ?>index.php#temoignages">À propos</a>
         </div>
         <div class="nav-actions">
           <button id="theme-toggle" class="btn btn-ghost" aria-label="Basculer le thème sombre/clair">
