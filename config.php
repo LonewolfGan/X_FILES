@@ -4,11 +4,13 @@
  * Connexion BDD PDO + constantes globales
  */
 
+
+
 // --- ENVIRONNEMENT ---
 if (getenv('DB_HOST') !== false) {
     // Render (variables d'environnement)
     $dbHost = getenv('DB_HOST');
-    $dbPort = getenv('DB_PORT') !== false ? getenv('DB_PORT') : '3306';
+    $dbPort = getenv('DB_PORT') !== false ? getenv('DB_PORT') : '3307';
     if ($dbPort && !str_contains($dbHost, ':')) {
         define('DB_HOST', $dbHost . ':' . $dbPort);
     } else {
@@ -23,7 +25,7 @@ if (getenv('DB_HOST') !== false) {
     require_once __DIR__ . '/config.infinityfree.php';
 } else {
     // Local / Replit — connect via Unix socket to avoid TCP port conflicts
-    define('DB_HOST', '127.0.0.1:3306');
+    define('DB_HOST', '127.0.0.1:3307');
     define('DB_NAME', 'xfiles');
     define('DB_USER', 'root');
     define('DB_PASS', '');
@@ -62,13 +64,19 @@ if (php_sapi_name() !== 'cli' && !headers_sent()) {
 }
 
 // --- CONSTANTES ---
-define('SITE_NAME', 'XFILES');
-define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10 MB
-define('ALLOWED_TYPES', ['pdf', 'doc', 'docx', 'ppt', 'pptx']);
+if (!defined('SITE_NAME')) {
+    define('SITE_NAME', 'XFILES');
+}
+if (!defined('MAX_FILE_SIZE')) {
+    define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10 MB
+}
+if (!defined('ALLOWED_TYPES')) {
+    define('ALLOWED_TYPES', ['pdf', 'doc', 'docx', 'ppt', 'pptx']);
+}
 
 // --- CONNEXION PDO ---
 $dbHost = DB_HOST;
-$dbPort = 3306;
+$dbPort = 3307;
 
 if (str_contains($dbHost, ':')) {
     $parts  = explode(':', $dbHost);
